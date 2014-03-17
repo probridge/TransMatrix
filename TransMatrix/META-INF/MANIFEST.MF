@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TransMatrix
+Bundle-SymbolicName: TransMatrix; singleton:=true
+Bundle-Version: 2.6.0.20140317
+Bundle-Activator: transmatrix.Activator
+Bundle-Vendor: Ge Yun Peng
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ swt-grouplayout.jar,
+ lib/jxl.jar
