@@ -87,6 +87,8 @@ public class ExcelResultWriter {
 				writeCell("Constraint", fmtHeaderCell);
 				writeCell("EgoDensity", fmtHeaderCell);
 				writeCell("NonRedundancy", fmtHeaderCell);
+				writeCell("Distribution", fmtHeaderCell);
+				writeCell("Cluster", fmtHeaderCell);
 			} else {
 				int index = 1;
 				for (int i = 0; i < resultToWrite.size(); i++) {
@@ -100,6 +102,9 @@ public class ExcelResultWriter {
 					writeCell("Constraint[" + index + "]", fmtHeaderCell);
 					writeCell("EgoDensity[" + index + "]", fmtHeaderCell);
 					writeCell("NonRedundancy[" + index + "]", fmtHeaderCell);
+					writeCell("Distribution[" + index + "]", fmtHeaderCell);
+					writeCell("Cluster[" + index + "]", fmtHeaderCell);
+
 					index++;
 				}
 			}
@@ -127,6 +132,8 @@ public class ExcelResultWriter {
 			writeCell("Density", fmtHeaderCell);
 			writeCell("EgoDensity", fmtHeaderCell);
 			writeCell("NonRedundancy", fmtHeaderCell);
+			writeCell("Distribution", fmtHeaderCell);
+			writeCell("Cluster", fmtHeaderCell);
 		} else if (type == 6) {
 			writeCell("±àºÅ", fmtHeaderCell);
 			writeCell("N", fmtHeaderCell);
@@ -161,6 +168,8 @@ public class ExcelResultWriter {
 				writeCell(thisResult.inContraint, fmtCell);
 				writeCell(thisResult.egoDensity, fmtCell);
 				writeCell(thisResult.nonRedundancy, fmtCell);
+				writeCell(thisResult.distribution, fmtCell);
+				writeCell(thisResult.cluster, fmtCell);
 				if (sepLines) {
 					currentRow++;
 					currentCol = 0;
@@ -191,6 +200,8 @@ public class ExcelResultWriter {
 				writeCell(thisResult.density, fmtCell);
 				writeCell(thisResult.egoDensity, fmtCell);
 				writeCell(thisResult.nonRedundancy, fmtCell);
+				writeCell(thisResult.distribution, fmtCell);
+				writeCell(thisResult.cluster, fmtCell);
 				currentRow++;
 				currentCol = 0;
 			}

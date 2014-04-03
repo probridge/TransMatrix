@@ -1,6 +1,5 @@
 package transmatrix;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.StringTokenizer;
@@ -451,20 +450,9 @@ public class MatrixCalculation {
 		for (int i = 0; i < n; i++) {
 			int degree = getDegree(matrix, i);
 			int val = degree * (degree - 1) / 2;
-			// BigInteger val = getFactorial(degree).divide(getFactorial(degree
-			// - 2).multiply(new BigInteger("2")));
 			bottom += val;
 		}
 		return 3.0d * getTriangles(matrix) / bottom;
-	}
-
-	public static BigInteger getFactorial(int val) {
-		BigInteger fact = BigInteger.ONE;
-		for (int i = 2; i <= val; i++) {
-			fact = fact.multiply(new BigInteger(String.valueOf(i)));
-		}
-		// System.out.println("fact(" + val + ")=" + fact.toString());
-		return fact;
 	}
 
 	public static MatrixCalculationResult[] computeResults(NumberMatrix transDataMatrix, int type, boolean sym) {
@@ -515,6 +503,9 @@ public class MatrixCalculation {
 			outCC2[i] = MatrixCalculation.getCloseness2(disMatrix, i, MatrixCalculation.OUT);
 		}
 		//
+		NumberMatrix outTransMatrix = transDataMatrix.makeCopy();
+		outTransMatrix.flip();
+		//
 		MatrixCalculationResult[] result = new MatrixCalculationResult[n];
 		//
 		for (int i = 0; i < n; i++) {
@@ -533,12 +524,10 @@ public class MatrixCalculation {
 			result[i].inClose2 = inCC2[i];
 			result[i].outClose2 = outCC2[i];
 			result[i].inEfficiency = MatrixCalculation.getEfficiency(transDataMatrix, i);
-			NumberMatrix mm = transDataMatrix.makeCopy();
-			mm.flip();
-			result[i].outEfficiency = MatrixCalculation.getEfficiency(mm, i);
+			result[i].outEfficiency = MatrixCalculation.getEfficiency(outTransMatrix, i);
 			//
 			result[i].inContraint = MatrixCalculation.getConstraint(transDataMatrix, i, type != 4);
-			result[i].outContraint = MatrixCalculation.getConstraint(mm, i, type != 4);
+			result[i].outContraint = MatrixCalculation.getConstraint(outTransMatrix, i, type != 4);
 			result[i].egoDensity = MatrixCalculation.getEgoDensity(transDataMatrix, i);
 			result[i].nonRedundancy = MatrixCalculation.getNonRedundancy(transDataMatrix, i, type);
 			result[i].density = MatrixCalculation.getDensity(transDataMatrix, i);
