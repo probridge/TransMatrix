@@ -78,32 +78,32 @@ public class MainView extends ViewPart {
 		FormData fd_btnTrans1 = new FormData();
 		fd_btnTrans1.top = new FormAttachment(tabFolder, 6);
 		fd_btnTrans1.left = new FormAttachment(tabFolder, 10, SWT.LEFT);
-//		fd_btnTrans1.right = new FormAttachment(0, 103);
+		// fd_btnTrans1.right = new FormAttachment(0, 103);
 
 		FormData fd_btnTrans2 = new FormData();
 		fd_btnTrans2.top = new FormAttachment(tabFolder, 6);
 		fd_btnTrans2.left = new FormAttachment(btnTrans1, 25);
-//		fd_btnTrans2.right = new FormAttachment(100, -725);
+		// fd_btnTrans2.right = new FormAttachment(100, -725);
 
 		FormData fd_btnTrans3 = new FormData();
 		fd_btnTrans3.top = new FormAttachment(tabFolder, 6);
 		fd_btnTrans3.left = new FormAttachment(btnTrans2, 25);
-//		fd_btnTrans3.right = new FormAttachment(btnTrans4, -24);
+		// fd_btnTrans3.right = new FormAttachment(btnTrans4, -24);
 
 		FormData fd_btnTrans4 = new FormData();
 		fd_btnTrans4.top = new FormAttachment(tabFolder, 6);
 		fd_btnTrans4.left = new FormAttachment(btnTrans3, 25);
-//		fd_btnTrans4.right = new FormAttachment(btnTrans5, -21);
+		// fd_btnTrans4.right = new FormAttachment(btnTrans5, -21);
 
 		FormData fd_btnTrans5 = new FormData();
 		fd_btnTrans5.top = new FormAttachment(tabFolder, 6);
 		fd_btnTrans5.left = new FormAttachment(btnTrans4, 25);
-//		fd_btnTrans5.right = new FormAttachment(100, -384);
+		// fd_btnTrans5.right = new FormAttachment(100, -384);
 
 		FormData fd_btnTrans6 = new FormData();
 		fd_btnTrans6.top = new FormAttachment(tabFolder, 6);
 		fd_btnTrans6.left = new FormAttachment(btnTrans5, 25);
-//		fd_btnTrans6.right = new FormAttachment(100, -278);
+		// fd_btnTrans6.right = new FormAttachment(100, -278);
 
 		btnTrans1.setLayoutData(fd_btnTrans1);
 		btnTrans2.setLayoutData(fd_btnTrans2);
@@ -111,7 +111,7 @@ public class MainView extends ViewPart {
 		btnTrans4.setLayoutData(fd_btnTrans4);
 		btnTrans5.setLayoutData(fd_btnTrans5);
 		btnTrans6.setLayoutData(fd_btnTrans6);
-		
+
 		originalTab = new TabItem(tabFolder, SWT.NONE);
 		originalTab.setText("\u539F\u59CB\u6570\u636E");
 
@@ -296,7 +296,7 @@ public class MainView extends ViewPart {
 				// populate table columns
 				displayTransMatrix();
 				// calculation
-				thisResult = MatrixCalculation.computeResults(transDataMatrix, null, 1, true);
+				thisResult = MatrixCalculation.computeResults(transDataMatrix, 1, true);
 				//
 				resultTableViewer.setInput(thisResult);
 				//
@@ -324,13 +324,11 @@ public class MainView extends ViewPart {
 					MessageDialog.openInformation(getSite().getShell(), "Input Run Pls", "Run: 1, 2");
 					return;
 				}
-				NumberMatrix rr[] = MatrixPrepare.prepare2(run, originalDataMatrix);
-				transDataMatrix = rr[0];
-				transDataMatrix1 = rr[1];
+				NumberMatrix transDataMatrix = MatrixPrepare.prepare2(run, originalDataMatrix);
 				// populate table columns
 				displayTransMatrix();
 				// calculation
-				thisResult = MatrixCalculation.computeResults(transDataMatrix, transDataMatrix1, 2, true);
+				thisResult = MatrixCalculation.computeResults(transDataMatrix, 2, true);
 				//
 				resultTableViewer.setInput(thisResult);
 				//
@@ -340,13 +338,11 @@ public class MainView extends ViewPart {
 		btnTrans3.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				NumberMatrix[] rr = MatrixPrepare.prepare3(originalDataMatrix);
-				transDataMatrix = rr[0];
-				transDataMatrix1 = rr[1];
+				NumberMatrix transDataMatrix = MatrixPrepare.prepare3(originalDataMatrix);
 				// populate table columns
 				displayTransMatrix();
 				// calculation
-				thisResult = MatrixCalculation.computeResults(transDataMatrix, transDataMatrix1, 3, true);
+				thisResult = MatrixCalculation.computeResults(transDataMatrix, 3, true);
 				//
 				resultTableViewer.setInput(thisResult);
 				//
@@ -384,7 +380,7 @@ public class MainView extends ViewPart {
 				// populate table columns
 				displayTransMatrix();
 				// calculation
-				thisResult = MatrixCalculation.computeResults(transDataMatrix, null, 4, sym);
+				thisResult = MatrixCalculation.computeResults(transDataMatrix, 4, sym);
 				//
 				resultTableViewer.setInput(thisResult);
 				//
@@ -416,7 +412,7 @@ public class MainView extends ViewPart {
 				// populate table columns
 				displayTransMatrix();
 				// calculation
-				thisResult = MatrixCalculation.computeResults(transDataMatrix, null, 5, true);
+				thisResult = MatrixCalculation.computeResults(transDataMatrix, 5, true);
 				//
 				resultTableViewer.setInput(thisResult);
 				//
@@ -431,7 +427,7 @@ public class MainView extends ViewPart {
 				// populate table columns
 				displayTransMatrix();
 				// calculation
-				thisResult = MatrixCalculation.computeResults(transDataMatrix, null, 6, false);
+				thisResult = MatrixCalculation.computeResults(transDataMatrix, 6, false);
 				//
 				resultTableViewer.setInput(thisResult);
 				//

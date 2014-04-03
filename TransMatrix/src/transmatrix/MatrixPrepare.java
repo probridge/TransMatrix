@@ -54,7 +54,7 @@ public class MatrixPrepare {
 	 * @return n+1的方阵
 	 */
 
-	public static NumberMatrix[] prepare2(int run, StringMatrix original) {
+	public static NumberMatrix prepare2(int run, StringMatrix original) {
 		int rows = original.row + 1;
 		NumberMatrix result = new NumberMatrix(rows, rows);
 		// Fill
@@ -73,11 +73,7 @@ public class MatrixPrepare {
 		result.description[0] = (String) original.data[0][0];
 		//
 		result = reorg(result);
-		//
-		NumberMatrix result1 = result.makeCopy();
-		// 01化
-		result.make01();
-		return new NumberMatrix[] { result, result1 };
+		return result;
 	}
 
 	/**
@@ -88,7 +84,7 @@ public class MatrixPrepare {
 	 * @return n+1的方阵
 	 */
 
-	public static NumberMatrix[] prepare3(StringMatrix original) {
+	public static NumberMatrix prepare3(StringMatrix original) {
 		int rows = original.row + 1;
 		NumberMatrix result = new NumberMatrix(rows, rows);
 		// Fill
@@ -107,11 +103,7 @@ public class MatrixPrepare {
 		result.description[0] = (String) original.data[0][0];
 		//
 		result = reorg(result);
-		//
-		NumberMatrix result1 = result.makeCopy();
-		// 01化
-		result.make01();
-		return new NumberMatrix[] { result, result1 };
+		return result;
 	}
 
 	public static NumberMatrix prepare4(StringMatrix original, boolean symmetric, boolean minus1) {

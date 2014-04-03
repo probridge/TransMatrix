@@ -16,8 +16,8 @@ public class ProcessWorker implements Runnable {
 	private boolean errFlag = false;
 	private boolean minus1;
 
-	public ProcessWorker(BatchView receiver, File workFile, int type,
-			boolean sym, boolean minus1, boolean sepLines, String outputDir) {
+	public ProcessWorker(BatchView receiver, File workFile, int type, boolean sym, boolean minus1, boolean sepLines,
+			String outputDir) {
 		this.receiver = receiver;
 		this.workfile = workFile;
 		this.type = type;
@@ -41,8 +41,7 @@ public class ProcessWorker implements Runnable {
 		msg = "...[" + workfile.getName() + "]计算完成！";
 		ExcelResultWriter wr = null;
 		try {
-			wr = new ExcelResultWriter(workfile.getName(), outputDir, sepLines,
-					type);
+			wr = new ExcelResultWriter(workfile.getName(), outputDir, sepLines, type);
 			//
 			StringMatrix[] strMatrix = Matrix.loadAll(workfile, type);
 			Thread.yield();
@@ -50,14 +49,11 @@ public class ProcessWorker implements Runnable {
 			for (int i = 0; i < strMatrix.length; i++) {
 				Thread.yield();
 				NumberMatrix transDataMatrix = null;
-				NumberMatrix transDataMatrix1 = null;
 				switch (type) {
 				case 1:
 					for (int run = 1; run <= 12; run++) {
-						transDataMatrix = MatrixPrepare.prepare1(run,
-								strMatrix[i]);
-						thisResult = MatrixCalculation.computeResults(
-								transDataMatrix, null, type, sym);
+						transDataMatrix = MatrixPrepare.prepare1(run, strMatrix[i]);
+						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
 						thisResult[0].resultLable += "_" + run;
 						wr.appendResult(thisResult[0]);
 					}
@@ -65,42 +61,31 @@ public class ProcessWorker implements Runnable {
 					break;
 				case 2:
 					for (int run = 1; run <= 2; run++) {
-						NumberMatrix[] rr = MatrixPrepare.prepare2(run,
-								strMatrix[i]);
-						transDataMatrix = rr[0];
-						transDataMatrix1 = rr[1];
-						thisResult = MatrixCalculation.computeResults(
-								transDataMatrix, transDataMatrix1, type, sym);
+						transDataMatrix = MatrixPrepare.prepare2(run, strMatrix[i]);
+						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
 						thisResult[0].resultLable += "_" + run;
 						wr.appendResult(thisResult[0]);
 					}
 					wr.appendResult(null);
 					break;
 				case 3:
-					NumberMatrix[] rr = MatrixPrepare.prepare3(strMatrix[i]);
-					transDataMatrix = rr[0];
-					transDataMatrix1 = rr[1];
-					thisResult = MatrixCalculation.computeResults(
-							transDataMatrix, transDataMatrix1, type, sym);
+					transDataMatrix = MatrixPrepare.prepare3(strMatrix[i]);
+					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
 					wr.appendResult(thisResult[0]);
 					wr.appendResult(null);
 					break;
 				case 4:
-					transDataMatrix = MatrixPrepare.prepare4(strMatrix[i], sym,
-							minus1);
+					transDataMatrix = MatrixPrepare.prepare4(strMatrix[i], sym, minus1);
 					wr.appendMatrix(transDataMatrix);
-					thisResult = MatrixCalculation.computeResults(
-							transDataMatrix, null, type, sym);
+					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
 					for (int index = 0; index < strMatrix[i].row; index++) {
 						wr.appendResult(thisResult[index]);
 					}
 					break;
 				case 5:
 					for (int run = 1; run <= 3; run++) {
-						transDataMatrix = MatrixPrepare.prepare5(run,
-								strMatrix[i]);
-						thisResult = MatrixCalculation.computeResults(
-								transDataMatrix, null, type, sym);
+						transDataMatrix = MatrixPrepare.prepare5(run, strMatrix[i]);
+						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
 						thisResult[0].resultLable += "_" + run;
 						wr.appendResult(thisResult[0]);
 					}
@@ -109,8 +94,7 @@ public class ProcessWorker implements Runnable {
 				case 6:
 					transDataMatrix = MatrixPrepare.prepare6(strMatrix[i]);
 					wr.appendMatrix(transDataMatrix);
-					thisResult = MatrixCalculation.computeResults(
-							transDataMatrix, null, type, sym);
+					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
 					wr.appendResult(thisResult[0]);
 					break;
 				default:
@@ -121,8 +105,7 @@ public class ProcessWorker implements Runnable {
 		} catch (RuntimeException e) {
 			errFlag = true;
 			try {
-				MessageDialog.openError(PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getShell(), "严重错误",
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "严重错误",
 						e.toString());
 				if (wr != null)
 					wr.close();

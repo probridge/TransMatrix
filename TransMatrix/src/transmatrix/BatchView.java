@@ -85,25 +85,26 @@ public class BatchView extends ViewPart {
 		FormData fd_grpFiles = new FormData();
 		fd_grpFiles.left = new FormAttachment(0, 10);
 		fd_grpFiles.top = new FormAttachment(0, 10);
-		fd_grpFiles.bottom = new FormAttachment(0, 578);
+		fd_grpFiles.bottom = new FormAttachment(0, 416);
 		grpFiles.setLayoutData(fd_grpFiles);
 
 		Group grpOptions = new Group(container, SWT.NONE);
 		fd_grpFiles.right = new FormAttachment(100, -462);
 		grpOptions.setText("\u5904\u7406\u65B9\u5F0F");
 		FormData fd_grpOptions = new FormData();
-		fd_grpOptions.left = new FormAttachment(grpFiles, 6);
 		fd_grpOptions.right = new FormAttachment(100, -10);
+		fd_grpOptions.left = new FormAttachment(grpFiles, 6);
 		fd_grpOptions.top = new FormAttachment(0, 10);
-		fd_grpOptions.bottom = new FormAttachment(0, 381);
+		fd_grpOptions.bottom = new FormAttachment(0, 207);
 		grpOptions.setLayoutData(fd_grpOptions);
 
 		Group grpOutput = new Group(container, SWT.NONE);
 		grpOutput.setText("\u8F93\u51FA\u9009\u9879");
 		FormData fd_grpOutput = new FormData();
-		fd_grpOutput.right = new FormAttachment(grpOptions, 0, SWT.RIGHT);
+		fd_grpOutput.bottom = new FormAttachment(grpFiles, 0, SWT.BOTTOM);
+		fd_grpOutput.right = new FormAttachment(100, -10);
 		fd_grpOutput.left = new FormAttachment(grpFiles, 6);
-		fd_grpOutput.top = new FormAttachment(grpOptions, 6);
+		fd_grpOutput.top = new FormAttachment(grpOptions, 15);
 		grpOutput.setLayoutData(fd_grpOutput);
 
 		btnStart = new Button(grpOutput, SWT.NONE);
@@ -208,31 +209,31 @@ public class BatchView extends ViewPart {
 
 		btnType2 = new Button(grpOptions, SWT.RADIO);
 		btnType2.setText("\u7C7B\u578B\u4E8C");
-		btnType2.setBounds(28, 93, 97, 17);
+		btnType2.setBounds(28, 61, 97, 17);
 
 		btnType3 = new Button(grpOptions, SWT.RADIO);
 		btnType3.setText("\u7C7B\u578B\u4E09");
-		btnType3.setBounds(28, 148, 97, 17);
+		btnType3.setBounds(28, 84, 97, 17);
 
 		btnType4 = new Button(grpOptions, SWT.RADIO);
 		btnType4.setText("\u7C7B\u578B\u56DB");
-		btnType4.setBounds(28, 203, 97, 17);
+		btnType4.setBounds(28, 107, 97, 17);
 
 		btnType5 = new Button(grpOptions, SWT.RADIO);
 		btnType5.setText("\u7C7B\u578B\u4E94");
-		btnType5.setBounds(28, 258, 97, 17);
+		btnType5.setBounds(28, 130, 97, 17);
 
 		btn4Symmetric = new Button(grpOptions, SWT.CHECK);
-		btn4Symmetric.setBounds(131, 203, 98, 17);
+		btn4Symmetric.setBounds(131, 107, 98, 17);
 		btn4Symmetric.setText("\u5BF9\u79F0\u5316\u5904\u7406");
 
 		btn4Minus1 = new Button(grpOptions, SWT.CHECK);
 		btn4Minus1.setText("\u51CF\u4E00\u5904\u7406");
-		btn4Minus1.setBounds(235, 203, 98, 17);
+		btn4Minus1.setBounds(235, 107, 98, 17);
 
 		btnType6 = new Button(grpOptions, SWT.RADIO);
 		btnType6.setText("\u7C7B\u578B\u516D\uFF1ADistribution - Cluster");
-		btnType6.setBounds(28, 313, 201, 17);
+		btnType6.setBounds(28, 153, 201, 17);
 
 		Label label = new Label(grpFiles, SWT.NONE);
 		FormData fd_label = new FormData();
@@ -289,20 +290,21 @@ public class BatchView extends ViewPart {
 		FormData fd_fileListTable = new FormData();
 		fd_fileListTable.left = new FormAttachment(0, 51);
 		fd_fileListTable.right = new FormAttachment(0, 400);
-		fd_fileListTable.bottom = new FormAttachment(0, 519);
+		fd_fileListTable.bottom = new FormAttachment(0, 357);
 		fd_fileListTable.top = new FormAttachment(0, 60);
 		fileListTable.setLayoutData(fd_fileListTable);
 
 		lblSelectedFile = new Label(grpFiles, SWT.NONE);
 		FormData fd_lblSelectedFile = new FormData();
+		fd_lblSelectedFile.top = new FormAttachment(fileListTable, 6);
 		fd_lblSelectedFile.right = new FormAttachment(btnSelectDir, 0, SWT.RIGHT);
-		fd_lblSelectedFile.top = new FormAttachment(0, 528);
-		fd_lblSelectedFile.left = new FormAttachment(0, 51);
+		fd_lblSelectedFile.left = new FormAttachment(txtDirectory, 0, SWT.LEFT);
 		lblSelectedFile.setLayoutData(fd_lblSelectedFile);
 		lblSelectedFile.setText("\u8BF7\u9009\u62E9\u4E00\u4E2A\u6216\u8005\u591A\u4E2A\u6587\u4EF6\uFF01");
 
 		Button btnSelectAll = new Button(grpFiles, SWT.NONE);
 		FormData fd_btnSelectAll = new FormData();
+		fd_btnSelectAll.top = new FormAttachment(btnSelectDir, 87);
 		fd_btnSelectAll.left = new FormAttachment(btnSelectDir, 0, SWT.LEFT);
 		fd_btnSelectAll.right = new FormAttachment(0, 453);
 		btnSelectAll.setLayoutData(fd_btnSelectAll);
@@ -316,11 +318,10 @@ public class BatchView extends ViewPart {
 		btnSelectAll.setText("\u5168\u9009");
 
 		Button btnSelectNone = new Button(grpFiles, SWT.NONE);
-		fd_btnSelectAll.bottom = new FormAttachment(100, -386);
 		FormData fd_btnSelectNone = new FormData();
+		fd_btnSelectNone.top = new FormAttachment(btnSelectAll, 6);
 		fd_btnSelectNone.left = new FormAttachment(btnSelectDir, 0, SWT.LEFT);
 		fd_btnSelectNone.right = new FormAttachment(0, 453);
-		fd_btnSelectNone.top = new FormAttachment(btnSelectAll, 7);
 		btnSelectNone.setLayoutData(fd_btnSelectNone);
 		btnSelectNone.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -333,7 +334,7 @@ public class BatchView extends ViewPart {
 
 		Button btnSelectInv = new Button(grpFiles, SWT.NONE);
 		FormData fd_btnSelectInv = new FormData();
-		fd_btnSelectInv.top = new FormAttachment(btnSelectAll, 40);
+		fd_btnSelectInv.top = new FormAttachment(btnSelectNone, 6);
 		fd_btnSelectInv.left = new FormAttachment(btnSelectDir, 0, SWT.LEFT);
 		fd_btnSelectInv.right = new FormAttachment(0, 453);
 		btnSelectInv.setLayoutData(fd_btnSelectInv);
@@ -348,11 +349,10 @@ public class BatchView extends ViewPart {
 		btnSelectInv.setText("\u53CD\u9009");
 
 		grpProgress = new Group(container, SWT.NONE);
-		fd_grpOutput.bottom = new FormAttachment(grpProgress, -6);
 		grpProgress.setLayout(new FormLayout());
 		FormData fd_group = new FormData();
-		fd_group.bottom = new FormAttachment(100, -10);
 		fd_group.top = new FormAttachment(grpFiles, 6);
+		fd_group.bottom = new FormAttachment(100, -10);
 		fd_group.left = new FormAttachment(0, 10);
 		fd_group.right = new FormAttachment(100, -10);
 		grpProgress.setLayoutData(fd_group);

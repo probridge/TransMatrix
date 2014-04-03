@@ -36,9 +36,12 @@ public class MatrixCalculation {
 		//
 		for (int i = 0; i < matrix.row; i++) {
 			int n = 0;
-			for (int j = 0; j < matrix.col; j++)
-				if ((Double) matrix.data[i][j] > 0.0d)
+			for (int j = 0; j < matrix.col; j++) {
+				if ((Double) matrix.data[i][j] > 0.0d && direction == OUT)
 					n++;
+				if ((Double) matrix.data[j][i] > 0.0d && direction == IN)
+					n++;
+			}
 			s[i] = dc[i] / n;
 		}
 		return s;
@@ -464,8 +467,7 @@ public class MatrixCalculation {
 		return fact;
 	}
 
-	public static MatrixCalculationResult[] computeResults(NumberMatrix transDataMatrix, NumberMatrix transDataMatrix1,
-			int type, boolean sym) {
+	public static MatrixCalculationResult[] computeResults(NumberMatrix transDataMatrix, int type, boolean sym) {
 		int n = transDataMatrix.row;
 		int N = MatrixCalculation.getN(transDataMatrix, type);
 		//
@@ -481,6 +483,8 @@ public class MatrixCalculation {
 		//
 		Double[] inStrength, outStrength, inOriginalStrength = null, outOriginalStrength = null;
 		if (type == 2 || type == 3) {
+			NumberMatrix transDataMatrix1 = transDataMatrix.makeCopy();
+			transDataMatrix1.make01();
 			inStrength = MatrixCalculation.getStrength(transDataMatrix1, MatrixCalculation.IN, type);
 			outStrength = MatrixCalculation.getStrength(transDataMatrix1, MatrixCalculation.OUT, type);
 		} else {
