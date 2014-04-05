@@ -187,17 +187,10 @@ public class MatrixPrepare {
 				for (int j = 0; j < original.row; j++)
 					result.data[i][j] = Matrix.toDouble(original.data[j][i + 2]);
 		}
-		// ¶Ô³Æ»¯
-		for (int i = 0; i < n; i++)
-			for (int j = 0; j < i; j++) {
-				double max = Math.max((Double) (result.data[j][i]), (Double) (result.data[i][j]));
-				result.data[j][i] = result.data[i][j] = max;
-			}
 		// ÌîÃû³Æ
 		for (int i = 0; i < original.row; i++)
 			result.description[i] = (String) original.data[i][0];
 		//
-		result.make01();
 		return result;
 	}
 

@@ -2,6 +2,7 @@ package transmatrix;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 public class MatrixCalculation {
@@ -60,7 +61,7 @@ public class MatrixCalculation {
 		return dc;
 	}
 
-	public static double getDensity(NumberMatrix matrix, int k) {
+	public static double getDensity(NumberMatrix matrix) {
 		double d = 0.0d;
 		for (int i = 0; i < matrix.row; i++) {
 			for (int j = 0; j < matrix.col; j++) {
@@ -455,7 +456,163 @@ public class MatrixCalculation {
 		return 3.0d * getTriangles(matrix) / bottom;
 	}
 
-	public static MatrixCalculationResult[] computeResults(NumberMatrix transDataMatrix, int type, boolean sym) {
+	public static ArrayList<HashSet<Integer>> getCircleList(NumberMatrix matrix) {
+		// pre-populate
+		ArrayList<HashSet<Integer>> circleList = new ArrayList<HashSet<Integer>>();
+		for (int i = 0; i < matrix.row; i++)
+			for (int j = 0; j < matrix.col; j++) {
+				if (j == i)
+					continue;
+				if ((Double) matrix.data[i][j] == 1.0d) {
+					HashSet<Integer> thisCircle = new HashSet<Integer>();
+					thisCircle.add(i);
+					thisCircle.add(j);
+					circleList.add(thisCircle);
+				}
+			}
+		// 开始迭代
+		do {
+			reduce(circleList);
+		} while (explore(circleList, matrix));
+		//
+		// finishing up
+		//
+		Iterator<HashSet<Integer>> it = circleList.iterator();
+		while (it.hasNext()) {
+			HashSet<Integer> thisCircle = it.next();
+			if (thisCircle.size() < 3)
+				it.remove();
+		}
+		return circleList;
+	}
+
+	private static boolean explore(ArrayList<HashSet<Integer>> circleList, NumberMatrix matrix) {
+		boolean structuralChange = false;
+		for (HashSet<Integer> eachCircle : circleList) {
+			ArrayList<Integer> nodesToAdd = new ArrayList<Integer>();
+			for (int eachNode = 0; eachNode < matrix.row; eachNode++) {
+				if (eachCircle.contains(eachNode))
+					continue;
+				// any node outside the circle
+				int counter = 0;
+				for (Integer eachNodeInCircle : eachCircle) {
+					if ((Double) matrix.data[eachNodeInCircle][eachNode] == 1.0d) {
+						counter++;
+					}
+				}
+				if (counter >= 2)
+					nodesToAdd.add(eachNode);
+			}
+			if (nodesToAdd.size() > 0) {
+				eachCircle.addAll(nodesToAdd);
+				structuralChange = true;
+			}
+		}
+		return structuralChange; // if anything changes return true
+	}
+
+	private static void reduce(ArrayList<HashSet<Integer>> circleList) {
+		for (HashSet<Integer> eachCircle : circleList)
+			for (HashSet<Integer> eachCircleToCheck : circleList) {
+				if (eachCircleToCheck == eachCircle)
+					continue;
+				if (eachCircleToCheck.contains(-1))
+					continue;
+				if (eachCircleToCheck.equals(eachCircle))
+					eachCircleToCheck.add(-1);
+			}
+		Iterator<HashSet<Integer>> it = circleList.iterator();
+		while (it.hasNext())
+			if (it.next().contains(-1))
+				it.remove();
+		return;
+	}
+
+	private static HashSet<Integer> getConnectionNodes(ArrayList<ArrayList<HashSet<Integer>>> nodesToCircleMap,
+			NumberMatrix matrix) {
+		int n = matrix.row;
+		HashSet<Integer> connectionNodes = new HashSet<Integer>();
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				if ((Double) matrix.data[i][j] == 1.0d) {
+					// i, j
+					ArrayList<HashSet<Integer>> sets1 = nodesToCircleMap.get(i);
+					ArrayList<HashSet<Integer>> sets2 = nodesToCircleMap.get(j);
+					if (sets1.size() == 0 || sets2.size() == 0) // 非伙
+						continue;
+					// 同伙
+					boolean skip = false;
+					for (HashSet<Integer> eachCircle : sets2)
+						if (eachCircle.contains(i))
+							skip = true;
+					//
+					if (skip)
+						continue;
+					//
+					connectionNodes.add(i);
+					connectionNodes.add(j);
+				}
+		return connectionNodes;
+	}
+
+	private static ArrayList<ArrayList<HashSet<Integer>>> getReserveCircleList(ArrayList<HashSet<Integer>> circles,
+			int row) {
+		ArrayList<ArrayList<HashSet<Integer>>> reserveList = new ArrayList<ArrayList<HashSet<Integer>>>(row);
+		for (int i = 0; i < row; i++) {
+			ArrayList<HashSet<Integer>> containingCircle = new ArrayList<HashSet<Integer>>();
+			// for each node
+			for (HashSet<Integer> eachCircle : circles)
+				if (eachCircle.contains(i))
+					containingCircle.add(eachCircle);
+			reserveList.add(containingCircle);
+		}
+		return reserveList;
+	}
+
+	private static NumberMatrix getCircleMatrix(NumberMatrix transDataMatrix, HashSet<Integer> eachCircle) {
+		int n = eachCircle.size();
+		NumberMatrix thisCircleMatrix = new NumberMatrix(n, n);
+		int N = transDataMatrix.row;
+		int x = 0, y = 0;
+		for (int i = 0; i < N; i++) {
+			if (eachCircle.contains(i)) {
+				for (int j = 0; j < N; j++)
+					if (eachCircle.contains(j))
+						thisCircleMatrix.data[x++][y] = transDataMatrix.data[i][j];
+				//
+				thisCircleMatrix.description[y] = transDataMatrix.description[i];
+				y++;
+				x = 0;
+			}
+		}
+		return thisCircleMatrix;
+	}
+
+	public static double getR(NumberMatrix matrix, int type) {
+		int n = matrix.row;
+		double a = 0.0d;
+		double apos = 0.0d;
+		int N = getN(matrix, type);
+		for (int i = 0; i < n; i++)
+			for (int j = i + 1; j < n; j++) {
+				a += (Double) matrix.data[i][j];
+				apos += (Double) matrix.data[j][i];
+			}
+		a = a / (N * (N - 1) * 2);
+		apos = apos / (N * (N - 1) * 2);
+		//
+		double n1 = 0, n2 = 0, n3 = 0;
+		//
+		for (int i = 0; i < n; i++)
+			for (int j = i + 1; j < n; j++) {
+				n1 += ((Double) matrix.data[i][j] - a) * ((Double) matrix.data[j][i] - apos);
+				n2 += Math.pow((Double) matrix.data[i][j] - a, 2);
+				n3 += Math.pow((Double) matrix.data[j][i] - apos, 2);
+			}
+		return n1 / Math.sqrt(n2 * n3);
+	}
+
+	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym) {
 		int n = transDataMatrix.row;
 		int N = MatrixCalculation.getN(transDataMatrix, type);
 		//
@@ -503,41 +660,71 @@ public class MatrixCalculation {
 			outCC2[i] = MatrixCalculation.getCloseness2(disMatrix, i, MatrixCalculation.OUT);
 		}
 		//
+		NumberMatrix symetric01Matrix = transDataMatrix.makeCopy();
+		symetric01Matrix.copySymmetric();
+		symetric01Matrix.make01();
+		// Get circles
+		ArrayList<HashSet<Integer>> circles = MatrixCalculation.getCircleList(symetric01Matrix);
+		// counter node --> containing circles
+		ArrayList<ArrayList<HashSet<Integer>>> nodesToCircleMap = MatrixCalculation.getReserveCircleList(circles,
+				symetric01Matrix.row);
+		//
 		NumberMatrix outTransMatrix = transDataMatrix.makeCopy();
 		outTransMatrix.flip();
+		// populate dis/clu into row result for easy handling
+		double matrixDistribution = MatrixCalculation.getDistribution(symetric01Matrix);
+		double matrixCluster = MatrixCalculation.getCluster(symetric01Matrix);
+		double matrixDensity = MatrixCalculation.getDensity(transDataMatrix);
+		double matrixR = MatrixCalculation.getR(transDataMatrix, type);
 		//
-		MatrixCalculationResult[] result = new MatrixCalculationResult[n];
-		//
+		MatrixRowResult[] rowResults = new MatrixRowResult[n];
 		for (int i = 0; i < n; i++) {
-			result[i] = new MatrixCalculationResult();
-			result[i].resultLable = transDataMatrix.description[i];
-			result[i].n = i;
-			result[i].N = N;
-			result[i].inDC = inDC[i];
-			result[i].outDC = outDC[i];
-			result[i].N_inDC = nInDC[i];
-			result[i].N_outDC = nOutDC[i];
-			result[i].between = betweenness[i];
-			result[i].N_between = nBetweenness[i];
-			result[i].N_inClose = nInCC[i];
-			result[i].N_outClose = nOutCC[i];
-			result[i].inClose2 = inCC2[i];
-			result[i].outClose2 = outCC2[i];
-			result[i].inEfficiency = MatrixCalculation.getEfficiency(transDataMatrix, i);
-			result[i].outEfficiency = MatrixCalculation.getEfficiency(outTransMatrix, i);
+			rowResults[i] = new MatrixRowResult();
+			rowResults[i].resultLable = transDataMatrix.description[i];
+			rowResults[i].n = i;
+			rowResults[i].N = N;
+			rowResults[i].inDC = inDC[i];
+			rowResults[i].outDC = outDC[i];
+			rowResults[i].N_inDC = nInDC[i];
+			rowResults[i].N_outDC = nOutDC[i];
+			rowResults[i].between = betweenness[i];
+			rowResults[i].N_between = nBetweenness[i];
+			rowResults[i].N_inClose = nInCC[i];
+			rowResults[i].N_outClose = nOutCC[i];
+			rowResults[i].inClose2 = inCC2[i];
+			rowResults[i].outClose2 = outCC2[i];
+			rowResults[i].inEfficiency = MatrixCalculation.getEfficiency(transDataMatrix, i);
+			rowResults[i].outEfficiency = MatrixCalculation.getEfficiency(outTransMatrix, i);
 			//
-			result[i].inContraint = MatrixCalculation.getConstraint(transDataMatrix, i, type != 4);
-			result[i].outContraint = MatrixCalculation.getConstraint(outTransMatrix, i, type != 4);
-			result[i].egoDensity = MatrixCalculation.getEgoDensity(transDataMatrix, i);
-			result[i].nonRedundancy = MatrixCalculation.getNonRedundancy(transDataMatrix, i, type);
-			result[i].density = MatrixCalculation.getDensity(transDataMatrix, i);
-			result[i].inStrength = inStrength[i];
-			result[i].outStrength = outStrength[i];
-			result[i].inOriginalStrength = (inOriginalStrength != null) ? inOriginalStrength[i] : Double.NaN;
-			result[i].outOriginalStrength = (outOriginalStrength != null) ? outOriginalStrength[i] : Double.NaN;
-			result[i].distribution = MatrixCalculation.getDistribution(transDataMatrix);
-			result[i].cluster = MatrixCalculation.getCluster(transDataMatrix);
+			rowResults[i].inContraint = MatrixCalculation.getConstraint(transDataMatrix, i, type != 4);
+			rowResults[i].outContraint = MatrixCalculation.getConstraint(outTransMatrix, i, type != 4);
+			rowResults[i].egoDensity = MatrixCalculation.getEgoDensity(transDataMatrix, i);
+			rowResults[i].nonRedundancy = MatrixCalculation.getNonRedundancy(transDataMatrix, i, type);
+			rowResults[i].density = matrixDensity;
+			rowResults[i].inStrength = inStrength[i];
+			rowResults[i].outStrength = outStrength[i];
+			rowResults[i].inOriginalStrength = (inOriginalStrength != null) ? inOriginalStrength[i] : Double.NaN;
+			rowResults[i].outOriginalStrength = (outOriginalStrength != null) ? outOriginalStrength[i] : Double.NaN;
+			rowResults[i].belongingCircle = nodesToCircleMap.get(i).size();
+			rowResults[i].distribution = matrixDistribution;
+			rowResults[i].cluster = matrixCluster;
+			rowResults[i].R = matrixR;
 		}
+		//
+		MatrixResults result = new MatrixResults();
+		result.rowResults = rowResults;
+		// get connector point (ie. node that points to another circle)
+		result.connectingNodes = MatrixCalculation.getConnectionNodes(nodesToCircleMap, symetric01Matrix);
+		result.circles = circles;
+		result.circleDensity = new double[circles.size()];
+		//
+		for (int i = 0; i < circles.size(); i++) {
+			// extract sub matrix from original
+			// calculate density for each row in the circle matrix
+			NumberMatrix circleMatrix = getCircleMatrix(transDataMatrix, circles.get(i));
+			result.circleDensity[i] = getDensity(circleMatrix);
+		}
+		//
 		return result;
 	}
 }

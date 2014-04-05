@@ -22,11 +22,6 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="单阵演算"
-            class="transmatrix.MainView"
-            id="transmatrix.MainView">
-      </view>
-      <view
             class="transmatrix.BatchView"
             id="transmatrix.BatchView"
             name="批量计算">

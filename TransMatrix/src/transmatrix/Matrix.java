@@ -174,8 +174,4 @@ public class Matrix {
 		nbf.setMaximumFractionDigits(3);
 		return nbf.format(number);
 	}
-
-	public static void main(String[] args) {
-		System.out.println(Double.NaN + 3.0d);
-	}
 }

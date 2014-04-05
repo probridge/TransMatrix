@@ -59,7 +59,6 @@ public class BatchView extends ViewPart {
 	private ThreadPoolExecutor executor;
 	private Label lblSelectedFile;
 	private Button btn4Minus1;
-	private Button btnType6;
 
 	public BatchView() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
@@ -128,8 +127,6 @@ public class BatchView extends ViewPart {
 					type = 4;
 				if (btnType5.getSelection())
 					type = 5;
-				if (btnType6.getSelection())
-					type = 6;
 
 				Object[] fileToWork = fileListTableViewer.getCheckedElements();
 				if (fileToWork != null && fileToWork.length > 0) {
@@ -204,36 +201,32 @@ public class BatchView extends ViewPart {
 
 		btnType1 = new Button(grpOptions, SWT.RADIO);
 		btnType1.setSelection(true);
-		btnType1.setBounds(28, 38, 97, 17);
+		btnType1.setBounds(28, 30, 97, 17);
 		btnType1.setText("\u7C7B\u578B\u4E00");
 
 		btnType2 = new Button(grpOptions, SWT.RADIO);
 		btnType2.setText("\u7C7B\u578B\u4E8C");
-		btnType2.setBounds(28, 61, 97, 17);
+		btnType2.setBounds(28, 65, 97, 17);
 
 		btnType3 = new Button(grpOptions, SWT.RADIO);
 		btnType3.setText("\u7C7B\u578B\u4E09");
-		btnType3.setBounds(28, 84, 97, 17);
+		btnType3.setBounds(28, 100, 97, 17);
 
 		btnType4 = new Button(grpOptions, SWT.RADIO);
 		btnType4.setText("\u7C7B\u578B\u56DB");
-		btnType4.setBounds(28, 107, 97, 17);
+		btnType4.setBounds(28, 135, 97, 17);
 
 		btnType5 = new Button(grpOptions, SWT.RADIO);
 		btnType5.setText("\u7C7B\u578B\u4E94");
-		btnType5.setBounds(28, 130, 97, 17);
+		btnType5.setBounds(28, 170, 97, 17);
 
 		btn4Symmetric = new Button(grpOptions, SWT.CHECK);
-		btn4Symmetric.setBounds(131, 107, 98, 17);
+		btn4Symmetric.setBounds(129, 135, 98, 17);
 		btn4Symmetric.setText("\u5BF9\u79F0\u5316\u5904\u7406");
 
 		btn4Minus1 = new Button(grpOptions, SWT.CHECK);
 		btn4Minus1.setText("\u51CF\u4E00\u5904\u7406");
-		btn4Minus1.setBounds(235, 107, 98, 17);
-
-		btnType6 = new Button(grpOptions, SWT.RADIO);
-		btnType6.setText("\u7C7B\u578B\u516D\uFF1ADistribution - Cluster");
-		btnType6.setBounds(28, 153, 201, 17);
+		btn4Minus1.setBounds(233, 135, 98, 17);
 
 		Label label = new Label(grpFiles, SWT.NONE);
 		FormData fd_label = new FormData();
@@ -406,7 +399,6 @@ public class BatchView extends ViewPart {
 		btnType3.setEnabled(status);
 		btnType4.setEnabled(status);
 		btnType5.setEnabled(status);
-		btnType6.setEnabled(status);
 		btn4Symmetric.setEnabled(status);
 		btn4Minus1.setEnabled(status);
 		btnSingleLine.setEnabled(status);

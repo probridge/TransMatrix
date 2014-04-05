@@ -3,7 +3,6 @@ package transmatrix;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.StatusLineContributionItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
@@ -19,8 +18,6 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 	private IWorkbenchAction quitAction;
-	private OpenFileAction openAction;
-	private ExportFileAction exportAction;
 	private IWorkbenchAction aboutAction;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -35,17 +32,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		aboutAction = ActionFactory.ABOUT.create(window);
 		aboutAction.setText("关于本程序");
 		ActionFactory.ABOUT.create(window);
-		openAction = new OpenFileAction(window);
-		exportAction = new ExportFileAction(window);
 	}
 
 	@Override
 	protected void fillMenuBar(IMenuManager menuBar) {
 		super.fillMenuBar(menuBar);
 		MenuManager systemMenu = new MenuManager("功能菜单(&S)", "sysMenu");
-		systemMenu.add(openAction);
-		systemMenu.add(exportAction);
-		systemMenu.add(new Separator());
 		systemMenu.add(aboutAction);
 		systemMenu.add(quitAction);
 		menuBar.add(systemMenu);

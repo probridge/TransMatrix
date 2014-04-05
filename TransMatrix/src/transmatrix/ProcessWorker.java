@@ -45,7 +45,7 @@ public class ProcessWorker implements Runnable {
 			//
 			StringMatrix[] strMatrix = Matrix.loadAll(workfile, type);
 			Thread.yield();
-			MatrixCalculationResult[] thisResult = null;
+			MatrixResults thisResult = null;
 			for (int i = 0; i < strMatrix.length; i++) {
 				Thread.yield();
 				NumberMatrix transDataMatrix = null;
@@ -54,48 +54,57 @@ public class ProcessWorker implements Runnable {
 					for (int run = 1; run <= 12; run++) {
 						transDataMatrix = MatrixPrepare.prepare1(run, strMatrix[i]);
 						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
-						thisResult[0].resultLable += "_" + run;
-						wr.appendResult(thisResult[0]);
+						thisResult.rowResults[0].resultLable += "#" + run;
+						wr.appendResult(thisResult.rowResults[0]); // 取第一行
+						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
+								thisResult.circleDensity, thisResult.connectingNodes);
 					}
+					//
 					wr.appendResult(null);
 					break;
 				case 2:
 					for (int run = 1; run <= 2; run++) {
 						transDataMatrix = MatrixPrepare.prepare2(run, strMatrix[i]);
 						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
-						thisResult[0].resultLable += "_" + run;
-						wr.appendResult(thisResult[0]);
+						thisResult.rowResults[0].resultLable += "#" + run;
+						wr.appendResult(thisResult.rowResults[0]); // 取第一行
+						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
+								thisResult.circleDensity, thisResult.connectingNodes);
 					}
+					//
 					wr.appendResult(null);
 					break;
 				case 3:
 					transDataMatrix = MatrixPrepare.prepare3(strMatrix[i]);
 					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
-					wr.appendResult(thisResult[0]);
+					wr.appendResult(thisResult.rowResults[0]); // 取第一行
 					wr.appendResult(null);
+					//
+					wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles, thisResult.circleDensity,
+							thisResult.connectingNodes);
 					break;
 				case 4:
 					transDataMatrix = MatrixPrepare.prepare4(strMatrix[i], sym, minus1);
 					wr.appendMatrix(transDataMatrix);
 					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
-					for (int index = 0; index < strMatrix[i].row; index++) {
-						wr.appendResult(thisResult[index]);
+					for (int index = 0; index < thisResult.rowResults.length; index++) {
+						wr.appendResult(thisResult.rowResults[index]); // 取所有行
 					}
+					//
+					wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles, thisResult.circleDensity,
+							thisResult.connectingNodes);
 					break;
 				case 5:
 					for (int run = 1; run <= 3; run++) {
 						transDataMatrix = MatrixPrepare.prepare5(run, strMatrix[i]);
 						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
-						thisResult[0].resultLable += "_" + run;
-						wr.appendResult(thisResult[0]);
+						thisResult.rowResults[0].resultLable += "#" + run;
+						wr.appendResult(thisResult.rowResults[0]); // 取第一行
+						//
+						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
+								thisResult.circleDensity, thisResult.connectingNodes);
 					}
 					wr.appendResult(null);
-					break;
-				case 6:
-					transDataMatrix = MatrixPrepare.prepare6(strMatrix[i]);
-					wr.appendMatrix(transDataMatrix);
-					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, sym);
-					wr.appendResult(thisResult[0]);
 					break;
 				default:
 					break;
@@ -106,7 +115,7 @@ public class ProcessWorker implements Runnable {
 			errFlag = true;
 			try {
 				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "严重错误",
-						e.toString());
+						e.getMessage());
 				if (wr != null)
 					wr.close();
 			} catch (Exception ee) {
@@ -122,6 +131,7 @@ public class ProcessWorker implements Runnable {
 					wr.close();
 			} catch (Exception ee) {
 			}
+			e.printStackTrace();
 			msg = "ERR[" + workfile.getName() + "]处理错误！信息：" + e.toString();
 			File resultFile = new File(outputDir + workfile.getName());
 			if (resultFile.exists())

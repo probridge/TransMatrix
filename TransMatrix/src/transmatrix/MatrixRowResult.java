@@ -1,6 +1,6 @@
 package transmatrix;
 
-public class MatrixCalculationResult {
+public class MatrixRowResult {
 	public String resultLable;
 	public int n, N;
 	public double outDC, inDC;
@@ -11,5 +11,7 @@ public class MatrixCalculationResult {
 	public double outEfficiency, inEfficiency, outContraint, inContraint;
 	public double egoDensity, density, nonRedundancy;
 	public double inStrength, outStrength, inOriginalStrength, outOriginalStrength;
+	public int belongingCircle;
 	public double distribution, cluster;
+	public double R;
 }

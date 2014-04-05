@@ -45,4 +45,13 @@ public class NumberMatrix extends Matrix {
 		data[j][i] = val1;
 		data[i][j] = val2;
 	}
+
+	public void copySymmetric() {
+		// ¶Ô³Æ»¯
+		for (int i = 0; i < row; i++)
+			for (int j = 0; j < i; j++) {
+				double max = Math.max((Double) data[j][i], (Double) data[i][j]);
+				data[j][i] = data[i][j] = max;
+			}
+	}
 }

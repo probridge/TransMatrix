@@ -12,6 +12,5 @@ public class Perspective implements IPerspectiveFactory {
 		IFolderLayout folderLayout = layout.createFolder("folder",
 				IPageLayout.TOP, 0.5f, IPageLayout.ID_EDITOR_AREA);
 		folderLayout.addView("transmatrix.BatchView");
-		folderLayout.addView("transmatrix.MainView");
 	}
 }
