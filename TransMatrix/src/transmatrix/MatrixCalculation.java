@@ -385,10 +385,11 @@ public class MatrixCalculation {
 		return result;
 	}
 
-	public static Double[] getNormalized4N(Double[] data) {
+	// 1-5
+	public static Double[] getNormalized4N(Double[] data, int N) {
 		Double[] result = new Double[data.length];
 		for (int i = 0; i < data.length; i++)
-			result[i] = data[i] / (4 * data.length - 4);
+			result[i] = data[i] / (N * data.length - N);
 		return result;
 	}
 
@@ -612,7 +613,7 @@ public class MatrixCalculation {
 		return n1 / Math.sqrt(n2 * n3);
 	}
 
-	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym) {
+	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym, int normalizeN) {
 		int n = transDataMatrix.row;
 		int N = MatrixCalculation.getN(transDataMatrix, type);
 		//
@@ -623,8 +624,8 @@ public class MatrixCalculation {
 		//
 		Double[] inDC = MatrixCalculation.getDC(transDataMatrix, MatrixCalculation.IN);
 		Double[] outDC = MatrixCalculation.getDC(transDataMatrix, MatrixCalculation.OUT);
-		Double[] nInDC = MatrixCalculation.getNormalized4N(inDC);
-		Double[] nOutDC = MatrixCalculation.getNormalized4N(outDC);
+		Double[] nInDC = MatrixCalculation.getNormalized4N(inDC, normalizeN);
+		Double[] nOutDC = MatrixCalculation.getNormalized4N(outDC, normalizeN);
 		//
 		Double[] inStrength, outStrength, inOriginalStrength = null, outOriginalStrength = null;
 		if (type == 2 || type == 3) {

@@ -42,13 +42,16 @@ public class ExcelResultWriter {
 	private ArrayList<HashSet<Integer>> connectionNodes = new ArrayList<HashSet<Integer>>();
 	private ArrayList<double[]> eachCircleDensity = new ArrayList<double[]>();
 
-	public ExcelResultWriter(String fileName, String outputPath, boolean sepLines, int type) throws IOException,
-			WriteException {
+	private int NDC;
+
+	public ExcelResultWriter(String fileName, String outputPath, boolean sepLines, int type, int NDC)
+			throws IOException, WriteException {
 		this.fileName = fileName;
 		this.outputFileName = fileName.substring(0, fileName.lastIndexOf('.')) + "_Result.xls";
 		this.outputPath = outputPath;
 		this.sepLines = sepLines;
 		this.type = type;
+		this.NDC = NDC;
 	}
 
 	public void appendCircle(String name, ArrayList<HashSet<Integer>> circles, double[] circleDensity,
@@ -137,8 +140,8 @@ public class ExcelResultWriter {
 			writeCell("I-Orig-Strength", fmtHeaderCell);
 			writeCell("O-Degree", fmtHeaderCell);
 			writeCell("I-Degree", fmtHeaderCell);
-			writeCell("N-O-Degree", fmtHeaderCell);
-			writeCell("N-I-Degree", fmtHeaderCell);
+			writeCell("N-O-Degree(" + NDC + ")", fmtHeaderCell);
+			writeCell("N-I-Degree(" + NDC + ")", fmtHeaderCell);
 			writeCell("Between", fmtHeaderCell);
 			writeCell("N-Between", fmtHeaderCell);
 			writeCell("N-O-Close", fmtHeaderCell);

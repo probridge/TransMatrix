@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.widgets.Spinner;
 
 public class BatchView extends ViewPart {
 
@@ -59,6 +60,7 @@ public class BatchView extends ViewPart {
 	private ThreadPoolExecutor executor;
 	private Label lblSelectedFile;
 	private Button btn4Minus1;
+	private Spinner spinDCN;
 
 	public BatchView() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
@@ -152,8 +154,8 @@ public class BatchView extends ViewPart {
 				for (Object eachFile : fileToWork) {
 					if (eachFile instanceof File) {
 						ProcessWorker workunit = new ProcessWorker(self, (File) eachFile, type, btn4Symmetric
-								.getSelection(), btn4Minus1.getSelection(), btnSeparateLines.getSelection(),
-								txtOutputDir.getText());
+								.getSelection(), btn4Minus1.getSelection(), spinDCN.getSelection(), btnSeparateLines
+								.getSelection(), txtOutputDir.getText());
 						executor.submit(workunit);
 					}
 				}
@@ -221,12 +223,22 @@ public class BatchView extends ViewPart {
 		btnType5.setBounds(28, 170, 97, 17);
 
 		btn4Symmetric = new Button(grpOptions, SWT.CHECK);
-		btn4Symmetric.setBounds(129, 135, 98, 17);
-		btn4Symmetric.setText("\u5BF9\u79F0\u5316\u5904\u7406");
+		btn4Symmetric.setBounds(129, 135, 54, 17);
+		btn4Symmetric.setText("\u5BF9\u79F0\u5316");
 
 		btn4Minus1 = new Button(grpOptions, SWT.CHECK);
-		btn4Minus1.setText("\u51CF\u4E00\u5904\u7406");
-		btn4Minus1.setBounds(233, 135, 98, 17);
+		btn4Minus1.setText("\u51CF\u4E00");
+		btn4Minus1.setBounds(192, 135, 54, 17);
+
+		Label lblNdc = new Label(grpOptions, SWT.NONE);
+		lblNdc.setBounds(252, 135, 47, 17);
+		lblNdc.setText("N-DC:");
+
+		spinDCN = new Spinner(grpOptions, SWT.BORDER);
+		spinDCN.setMaximum(5);
+		spinDCN.setMinimum(1);
+		spinDCN.setSelection(4);
+		spinDCN.setBounds(305, 132, 47, 23);
 
 		Label label = new Label(grpFiles, SWT.NONE);
 		FormData fd_label = new FormData();
