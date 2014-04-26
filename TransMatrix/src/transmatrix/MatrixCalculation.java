@@ -614,6 +614,11 @@ public class MatrixCalculation {
 	}
 
 	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym, int normalizeN) {
+		// type 2,3 uses 01 matrix for calculation except strength
+		NumberMatrix keepMatrix = transDataMatrix.makeCopy();
+		if (type == 2 || type == 3)
+			transDataMatrix.make01();
+		//
 		int n = transDataMatrix.row;
 		int N = MatrixCalculation.getN(transDataMatrix, type);
 		//
@@ -629,10 +634,8 @@ public class MatrixCalculation {
 		//
 		Double[] inStrength, outStrength, inOriginalStrength = null, outOriginalStrength = null;
 		if (type == 2 || type == 3) {
-			NumberMatrix transDataMatrix1 = transDataMatrix.makeCopy();
-			transDataMatrix1.make01();
-			inStrength = MatrixCalculation.getStrength(transDataMatrix1, MatrixCalculation.IN, type);
-			outStrength = MatrixCalculation.getStrength(transDataMatrix1, MatrixCalculation.OUT, type);
+			inStrength = MatrixCalculation.getStrength(keepMatrix, MatrixCalculation.IN, type);
+			outStrength = MatrixCalculation.getStrength(keepMatrix, MatrixCalculation.OUT, type);
 		} else {
 			inStrength = MatrixCalculation.getStrength(transDataMatrix, MatrixCalculation.IN, type);
 			outStrength = MatrixCalculation.getStrength(transDataMatrix, MatrixCalculation.OUT, type);
@@ -676,6 +679,7 @@ public class MatrixCalculation {
 		double matrixDistribution = MatrixCalculation.getDistribution(symetric01Matrix);
 		double matrixCluster = MatrixCalculation.getCluster(symetric01Matrix);
 		double matrixDensity = MatrixCalculation.getDensity(transDataMatrix);
+		double matrixDensitySy = MatrixCalculation.getDensity(symetric01Matrix);
 		double matrixR = MatrixCalculation.getR(transDataMatrix, type);
 		//
 		MatrixRowResult[] rowResults = new MatrixRowResult[n];
@@ -700,8 +704,10 @@ public class MatrixCalculation {
 			rowResults[i].inContraint = MatrixCalculation.getConstraint(transDataMatrix, i, type != 4);
 			rowResults[i].outContraint = MatrixCalculation.getConstraint(outTransMatrix, i, type != 4);
 			rowResults[i].egoDensity = MatrixCalculation.getEgoDensity(transDataMatrix, i);
+			rowResults[i].egoDensitySy = MatrixCalculation.getEgoDensity(symetric01Matrix, i);
 			rowResults[i].nonRedundancy = MatrixCalculation.getNonRedundancy(transDataMatrix, i, type);
 			rowResults[i].density = matrixDensity;
+			rowResults[i].densitySy = matrixDensitySy;
 			rowResults[i].inStrength = inStrength[i];
 			rowResults[i].outStrength = outStrength[i];
 			rowResults[i].inOriginalStrength = (inOriginalStrength != null) ? inOriginalStrength[i] : Double.NaN;

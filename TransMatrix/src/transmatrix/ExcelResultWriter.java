@@ -154,6 +154,8 @@ public class ExcelResultWriter {
 			writeCell("I-Constraint", fmtHeaderCell);
 			writeCell("Density", fmtHeaderCell);
 			writeCell("EgoDensity", fmtHeaderCell);
+			writeCell("Density-Sy", fmtHeaderCell);
+			writeCell("EgoDensity-Sy", fmtHeaderCell);
 			writeCell("NonRedundancy", fmtHeaderCell);
 			writeCell("R", fmtHeaderCell);
 			writeCell("Distribution", fmtHeaderCell);
@@ -221,6 +223,8 @@ public class ExcelResultWriter {
 				writeCell(thisResult.inContraint, fmtCell);
 				writeCell(thisResult.density, fmtCell);
 				writeCell(thisResult.egoDensity, fmtCell);
+				writeCell(thisResult.densitySy, fmtCell);
+				writeCell(thisResult.egoDensitySy, fmtCell);
 				writeCell(thisResult.nonRedundancy, fmtCell);
 				writeCell(thisResult.R, fmtCell);
 				writeCell(thisResult.distribution, fmtCell);
