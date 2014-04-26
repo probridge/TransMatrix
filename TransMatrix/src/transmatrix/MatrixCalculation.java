@@ -732,6 +732,84 @@ public class MatrixCalculation {
 			result.circleDensity[i] = getDensity(circleMatrix);
 		}
 		//
+		MatrixCalculation.computeCircleStructuralHole(result, nodesToCircleMap, transDataMatrix, type);
 		return result;
+	}
+
+	private static void computeCircleStructuralHole(MatrixResults result,
+			ArrayList<ArrayList<HashSet<Integer>>> nodesToCircleMap, NumberMatrix matrix, int type) {
+		// deep clone
+		result.circlesMatrixMemberList = new ArrayList<HashSet<Integer>>();
+		for (HashSet<Integer> eachCircle : result.circles) {
+			result.circlesMatrixMemberList.add(new HashSet<Integer>(eachCircle));
+		}
+		//
+		ArrayList<Integer> brokenCircleMemberPair = new ArrayList<Integer>();
+		//
+		for (int i = 0; i < nodesToCircleMap.size(); i++) {
+			// each node belong to multiple circle
+			ArrayList<HashSet<Integer>> circlesList = nodesToCircleMap.get(i);
+			if (circlesList.size() > 1) {
+				// append new member
+				HashSet<Integer> newCircleMember = new HashSet<Integer>();
+				newCircleMember.add(i);
+				int newMemberIndex = result.circlesMatrixMemberList.size();
+				result.circlesMatrixMemberList.add(newCircleMember);
+				//
+				for (int j = 0; j < newMemberIndex; j++) {
+					if (result.circlesMatrixMemberList.get(j).remove(i)) {
+						// common node removed from the circle
+						// remember (i,j), (j,i) - mark connectecd
+						brokenCircleMemberPair.add(newMemberIndex);
+						brokenCircleMemberPair.add(j);
+					}
+				}
+			}
+		}
+		// generate new matrix
+		int size = result.circlesMatrixMemberList.size();
+		result.circlesMatrix = new NumberMatrix(size, size);
+		for (int i = 0; i < size; i++) {
+			result.circlesMatrix.description[i] = result.circlesMatrixMemberList.get(i).toString();
+		}
+		// populate broken circles
+		Iterator<Integer> it = brokenCircleMemberPair.iterator();
+		while (it.hasNext()) {
+			int a = it.next();
+			int b = it.next();
+			result.circlesMatrix.data[a][b] = 1.0d;
+			result.circlesMatrix.data[b][a] = 1.0d;
+		}
+		// iterate connection points
+		ArrayList<Integer> connectionPointList = new ArrayList<Integer>(result.connectingNodes);
+		for (int i = 0; i < connectionPointList.size(); i++)
+			for (int j = 0; j < connectionPointList.size(); j++) {
+				if (i == j)
+					continue;
+				if ((Double) matrix.data[connectionPointList.get(i)][connectionPointList.get(j)] == 0.0d)
+					continue;
+				int iCircleNumber = findInCircleList(result.circlesMatrixMemberList, connectionPointList.get(i));
+				int jCircleNumber = findInCircleList(result.circlesMatrixMemberList, connectionPointList.get(j));
+				//
+				if (iCircleNumber == jCircleNumber)
+					continue;
+				result.circlesMatrix.data[iCircleNumber][jCircleNumber] = 1.0d;
+				result.circlesMatrix.data[jCircleNumber][iCircleNumber] = 1.0d;
+			}
+		// matrix gained - do efficiency & contraint
+		result.circleMatrixEfficienty = new double[size];
+		result.circleMatrixContraint = new double[size];
+		for (int i = 0; i < size; i++) {
+			result.circleMatrixEfficienty[i] = MatrixCalculation.getEfficiency(result.circlesMatrix, i);
+			result.circleMatrixContraint[i] = MatrixCalculation.getConstraint(result.circlesMatrix, i, type != 4);
+		}
+	}
+
+	private static int findInCircleList(ArrayList<HashSet<Integer>> circlesMatrixMemberList, int node) {
+		for (int index = 0; index < circlesMatrixMemberList.size(); index++)
+			if (circlesMatrixMemberList.get(index).contains(node))
+				return index;
+		// not found - generate exception
+		return -1;
 	}
 }

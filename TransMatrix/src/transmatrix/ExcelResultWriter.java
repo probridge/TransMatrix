@@ -41,6 +41,9 @@ public class ExcelResultWriter {
 	private ArrayList<ArrayList<HashSet<Integer>>> eachCircles = new ArrayList<ArrayList<HashSet<Integer>>>();
 	private ArrayList<HashSet<Integer>> connectionNodes = new ArrayList<HashSet<Integer>>();
 	private ArrayList<double[]> eachCircleDensity = new ArrayList<double[]>();
+	private ArrayList<NumberMatrix> eachCircleMatrix = new ArrayList<NumberMatrix>();
+	private ArrayList<double[]> eachCircleMatrixEfficiency = new ArrayList<double[]>();
+	private ArrayList<double[]> eachCircleMatrixConstraint = new ArrayList<double[]>();
 
 	private int NDC;
 
@@ -55,11 +58,15 @@ public class ExcelResultWriter {
 	}
 
 	public void appendCircle(String name, ArrayList<HashSet<Integer>> circles, double[] circleDensity,
-			HashSet<Integer> connectionNodes) {
+			HashSet<Integer> connectionNodes, NumberMatrix circleMatrix, double[] circleMatrixEfficiency,
+			double[] circleMatrixConstraint) {
 		this.circleNames.add(name);
 		this.eachCircles.add(circles);
 		this.connectionNodes.add(connectionNodes);
 		this.eachCircleDensity.add(circleDensity);
+		this.eachCircleMatrix.add(circleMatrix);
+		this.eachCircleMatrixEfficiency.add(circleMatrixEfficiency);
+		this.eachCircleMatrixConstraint.add(circleMatrixConstraint);
 	}
 
 	public void appendResult(MatrixRowResult thisResult) {
@@ -290,6 +297,33 @@ public class ExcelResultWriter {
 				//
 				for (double eachCircleDensity : thisCircleDensity) {
 					writeCell(eachCircleDensity, fmtHeaderCell);
+				}
+				//
+				currentRow++;
+				currentCol = 0;
+				//
+				NumberMatrix thisCircleMatrix = eachCircleMatrix.get(i);
+				double[] thisCircleMatrixEfficiency = eachCircleMatrixEfficiency.get(i);
+				double[] thisCircleMatrixConstraint = eachCircleMatrixConstraint.get(i);
+				//
+				writeCell("伙结构洞成员", fmtHeaderCell);
+				for (int k = 0; k < thisCircleMatrix.row; k++) {
+					writeCell(thisCircleMatrix.description[k], fmtHeaderCell);
+				}
+				writeCell("Cir-Efficiency", fmtHeaderCell);
+				writeCell("Cir-Constraint", fmtHeaderCell);
+				//
+				currentRow++;
+				currentCol = 0;
+				//
+				writeCell("伙矩阵", fmtHeaderCell);
+				for (int m = 0; m < thisCircleMatrix.row; m++) {
+					for (int n = 0; n < thisCircleMatrix.col; n++)
+						writeCell(thisCircleMatrix.data[m][n], fmtHeaderCell);
+					writeCell(thisCircleMatrixEfficiency[m], fmtHeaderCell);
+					writeCell(thisCircleMatrixConstraint[m], fmtHeaderCell);
+					currentRow++;
+					currentCol = 1;
 				}
 				currentRow += 2;
 				currentCol = 0;

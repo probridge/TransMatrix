@@ -59,7 +59,8 @@ public class ProcessWorker implements Runnable {
 						thisResult.rowResults[0].resultLable += "#" + run;
 						wr.appendResult(thisResult.rowResults[0]); // 取第一行
 						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
-								thisResult.circleDensity, thisResult.connectingNodes);
+								thisResult.circleDensity, thisResult.connectingNodes, thisResult.circlesMatrix,
+								thisResult.circleMatrixEfficienty, thisResult.circleMatrixContraint);
 					}
 					//
 					wr.appendResult(null);
@@ -71,7 +72,8 @@ public class ProcessWorker implements Runnable {
 						thisResult.rowResults[0].resultLable += "#" + run;
 						wr.appendResult(thisResult.rowResults[0]); // 取第一行
 						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
-								thisResult.circleDensity, thisResult.connectingNodes);
+								thisResult.circleDensity, thisResult.connectingNodes, thisResult.circlesMatrix,
+								thisResult.circleMatrixEfficienty, thisResult.circleMatrixContraint);
 					}
 					//
 					wr.appendResult(null);
@@ -83,7 +85,8 @@ public class ProcessWorker implements Runnable {
 					wr.appendResult(null);
 					//
 					wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles, thisResult.circleDensity,
-							thisResult.connectingNodes);
+							thisResult.connectingNodes, thisResult.circlesMatrix, thisResult.circleMatrixEfficienty,
+							thisResult.circleMatrixContraint);
 					break;
 				case 4:
 					transDataMatrix = MatrixPrepare.prepare4(strMatrix[i], sym, minus1);
@@ -94,7 +97,8 @@ public class ProcessWorker implements Runnable {
 					}
 					//
 					wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles, thisResult.circleDensity,
-							thisResult.connectingNodes);
+							thisResult.connectingNodes, thisResult.circlesMatrix, thisResult.circleMatrixEfficienty,
+							thisResult.circleMatrixContraint);
 					break;
 				case 5:
 					for (int run = 1; run <= 3; run++) {
@@ -104,7 +108,8 @@ public class ProcessWorker implements Runnable {
 						wr.appendResult(thisResult.rowResults[0]); // 取第一行
 						//
 						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
-								thisResult.circleDensity, thisResult.connectingNodes);
+								thisResult.circleDensity, thisResult.connectingNodes, thisResult.circlesMatrix,
+								thisResult.circleMatrixEfficienty, thisResult.circleMatrixContraint);
 					}
 					wr.appendResult(null);
 					break;
