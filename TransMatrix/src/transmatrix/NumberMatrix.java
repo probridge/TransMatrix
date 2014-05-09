@@ -29,7 +29,7 @@ public class NumberMatrix extends Matrix {
 	public void make01() {
 		for (int i = 0; i < row; i++)
 			for (int j = 0; j < col; j++)
-				if ((Double) data[i][j] > 1)
+				if ((Double) data[i][j] > 0.0d)
 					data[i][j] = 1.0d;
 	}
 

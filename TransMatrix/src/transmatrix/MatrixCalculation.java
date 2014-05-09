@@ -663,7 +663,10 @@ public class MatrixCalculation {
 			inCC2[i] = MatrixCalculation.getCloseness2(disMatrix, i, MatrixCalculation.IN);
 			outCC2[i] = MatrixCalculation.getCloseness2(disMatrix, i, MatrixCalculation.OUT);
 		}
-		//
+		// >0 ==> 1 (type 4 symmetric[div2] only)
+		NumberMatrix matrix01 = transDataMatrix.makeCopy();
+		matrix01.make01();
+		// sym=max([x,y],[y,x]), >0==>1
 		NumberMatrix symetric01Matrix = transDataMatrix.makeCopy();
 		symetric01Matrix.copySymmetric();
 		symetric01Matrix.make01();
@@ -679,8 +682,9 @@ public class MatrixCalculation {
 		double matrixDistribution = MatrixCalculation.getDistribution(symetric01Matrix);
 		double matrixCluster = MatrixCalculation.getCluster(symetric01Matrix);
 		double matrixDensity = MatrixCalculation.getDensity(transDataMatrix);
-		double matrixDensitySy = MatrixCalculation.getDensity(symetric01Matrix);
 		double matrixR = MatrixCalculation.getR(transDataMatrix, type);
+		//
+		double matrixDensitySy = MatrixCalculation.getDensity(matrix01);
 		//
 		MatrixRowResult[] rowResults = new MatrixRowResult[n];
 		for (int i = 0; i < n; i++) {
@@ -704,7 +708,7 @@ public class MatrixCalculation {
 			rowResults[i].inContraint = MatrixCalculation.getConstraint(transDataMatrix, i, type != 4);
 			rowResults[i].outContraint = MatrixCalculation.getConstraint(outTransMatrix, i, type != 4);
 			rowResults[i].egoDensity = MatrixCalculation.getEgoDensity(transDataMatrix, i);
-			rowResults[i].egoDensitySy = MatrixCalculation.getEgoDensity(symetric01Matrix, i);
+			rowResults[i].egoDensitySy = MatrixCalculation.getEgoDensity(matrix01, i);
 			rowResults[i].nonRedundancy = MatrixCalculation.getNonRedundancy(transDataMatrix, i, type);
 			rowResults[i].density = matrixDensity;
 			rowResults[i].densitySy = matrixDensitySy;
@@ -766,6 +770,15 @@ public class MatrixCalculation {
 				}
 			}
 		}
+		// process non circle nodes
+		for (int i = 0; i < nodesToCircleMap.size(); i++) {
+			// nodes that not belonging to any circle
+			ArrayList<HashSet<Integer>> circlesList = nodesToCircleMap.get(i);
+			if (circlesList.size() == 0) {
+				
+			}
+		}
+
 		// generate new matrix
 		int size = result.circlesMatrixMemberList.size();
 		result.circlesMatrix = new NumberMatrix(size, size);
