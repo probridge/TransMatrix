@@ -770,20 +770,26 @@ public class MatrixCalculation {
 				}
 			}
 		}
+		// remember circle number
+		int nonCircleIndex = result.circlesMatrixMemberList.size();
 		// process non circle nodes
 		for (int i = 0; i < nodesToCircleMap.size(); i++) {
 			// nodes that not belonging to any circle
 			ArrayList<HashSet<Integer>> circlesList = nodesToCircleMap.get(i);
 			if (circlesList.size() == 0) {
-				
+				// append new member
+				HashSet<Integer> newCircleMember = new HashSet<Integer>();
+				newCircleMember.add(i);
+				result.circlesMatrixMemberList.add(newCircleMember);
 			}
 		}
-
 		// generate new matrix
 		int size = result.circlesMatrixMemberList.size();
 		result.circlesMatrix = new NumberMatrix(size, size);
 		for (int i = 0; i < size; i++) {
 			result.circlesMatrix.description[i] = result.circlesMatrixMemberList.get(i).toString();
+			if (i >= nonCircleIndex)
+				result.circlesMatrix.description[i] = "-" + result.circlesMatrix.description[i] + "-";
 		}
 		// populate broken circles
 		Iterator<Integer> it = brokenCircleMemberPair.iterator();
@@ -809,6 +815,23 @@ public class MatrixCalculation {
 				result.circlesMatrix.data[iCircleNumber][jCircleNumber] = 1.0d;
 				result.circlesMatrix.data[jCircleNumber][iCircleNumber] = 1.0d;
 			}
+		// iterate non circle nodes
+		for (int i = nonCircleIndex; i < result.circlesMatrixMemberList.size(); i++) {
+			// thisNode is a single member hashset<Integer>
+			HashSet<Integer> thisNode = result.circlesMatrixMemberList.get(i);
+			int thisNodeNumber = (Integer) (thisNode.toArray()[0]);
+			for (int j = 0; j < result.circlesMatrixMemberList.size(); j++) {
+				HashSet<Integer> theNodeOrCircle = result.circlesMatrixMemberList.get(j);
+				Iterator<Integer> itr = theNodeOrCircle.iterator();
+				while (itr.hasNext()) {
+					Integer eachMember = itr.next();
+					if ((Double) matrix.data[thisNodeNumber][eachMember] > 0.0d) {
+						result.circlesMatrix.data[i][j] = 1.0d;
+						result.circlesMatrix.data[j][i] = 1.0d;
+					}
+				}
+			}
+		}
 		// matrix gained - do efficiency & contraint
 		result.circleMatrixEfficienty = new double[size];
 		result.circleMatrixContraint = new double[size];

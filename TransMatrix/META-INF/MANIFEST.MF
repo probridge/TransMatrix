@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: TransMatrix
 Bundle-SymbolicName: TransMatrix; singleton:=true
-Bundle-Version: 3.0.0.20140427
+Bundle-Version: 3.1.0.20140510
 Bundle-Activator: transmatrix.Activator
 Bundle-Vendor: Ge Yun Peng
 Require-Bundle: org.eclipse.ui,

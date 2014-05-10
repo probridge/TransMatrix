@@ -262,7 +262,9 @@ public class ExcelResultWriter {
 				writeCell("矩阵", fmtHeaderCell);
 				writeCell(circleNames.get(i), fmtHeaderCell);
 				if (!circleNotice) {
-					writeCell("伙成员(N)为连接点", fmtHeaderCell);
+					writeCell("伙成员(N)为伙连接点", fmtHeaderCell);
+					writeCell("结构洞[N]为伙公共节点", fmtHeaderCell);
+					writeCell("结构洞-[N]-为非伙节点", fmtHeaderCell);
 					circleNotice = true;
 				}
 				currentRow++;
@@ -306,7 +308,7 @@ public class ExcelResultWriter {
 				double[] thisCircleMatrixEfficiency = eachCircleMatrixEfficiency.get(i);
 				double[] thisCircleMatrixConstraint = eachCircleMatrixConstraint.get(i);
 				//
-				writeCell("伙结构洞成员", fmtHeaderCell);
+				writeCell("伙结构洞", fmtHeaderCell);
 				for (int k = 0; k < thisCircleMatrix.row; k++) {
 					writeCell(thisCircleMatrix.description[k], fmtHeaderCell);
 				}
@@ -316,14 +318,14 @@ public class ExcelResultWriter {
 				currentRow++;
 				currentCol = 0;
 				//
-				writeCell("伙矩阵", fmtHeaderCell);
 				for (int m = 0; m < thisCircleMatrix.row; m++) {
+					writeCell(thisCircleMatrix.description[m], fmtHeaderCell);
 					for (int n = 0; n < thisCircleMatrix.col; n++)
 						writeCell(thisCircleMatrix.data[m][n], fmtHeaderCell);
 					writeCell(thisCircleMatrixEfficiency[m], fmtHeaderCell);
 					writeCell(thisCircleMatrixConstraint[m], fmtHeaderCell);
 					currentRow++;
-					currentCol = 1;
+					currentCol = 0;
 				}
 				currentRow += 2;
 				currentCol = 0;
