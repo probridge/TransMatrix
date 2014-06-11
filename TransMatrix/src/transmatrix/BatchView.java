@@ -47,7 +47,7 @@ public class BatchView extends ViewPart {
 	private Button btnType3;
 	private Button btnType4;
 	private Button btnType5;
-	private Button btn4Symmetric;
+	private Button btn4SymAvg;
 	private Button btnSingleLine;
 	private Button btnSeparateLines;
 	private BatchView self = this;
@@ -61,6 +61,8 @@ public class BatchView extends ViewPart {
 	private Label lblSelectedFile;
 	private Button btn4Minus1;
 	private Spinner spinDCN;
+	private Button btn4SymMin;
+	private Label label_3;
 
 	public BatchView() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
@@ -153,9 +155,9 @@ public class BatchView extends ViewPart {
 				// Get each file & start thread
 				for (Object eachFile : fileToWork) {
 					if (eachFile instanceof File) {
-						ProcessWorker workunit = new ProcessWorker(self, (File) eachFile, type, btn4Symmetric
-								.getSelection(), btn4Minus1.getSelection(), spinDCN.getSelection(), btnSeparateLines
-								.getSelection(), txtOutputDir.getText());
+						ProcessWorker workunit = new ProcessWorker(self, (File) eachFile, type, btn4SymAvg
+								.getSelection(), btn4SymMin.getSelection(), btn4Minus1.getSelection(), spinDCN
+								.getSelection(), btnSeparateLines.getSelection(), txtOutputDir.getText());
 						executor.submit(workunit);
 					}
 				}
@@ -203,42 +205,62 @@ public class BatchView extends ViewPart {
 
 		btnType1 = new Button(grpOptions, SWT.RADIO);
 		btnType1.setSelection(true);
-		btnType1.setBounds(28, 30, 97, 17);
+		btnType1.setBounds(28, 30, 65, 17);
 		btnType1.setText("\u7C7B\u578B\u4E00");
 
 		btnType2 = new Button(grpOptions, SWT.RADIO);
 		btnType2.setText("\u7C7B\u578B\u4E8C");
-		btnType2.setBounds(28, 65, 97, 17);
+		btnType2.setBounds(28, 65, 65, 17);
 
 		btnType3 = new Button(grpOptions, SWT.RADIO);
 		btnType3.setText("\u7C7B\u578B\u4E09");
-		btnType3.setBounds(28, 100, 97, 17);
+		btnType3.setBounds(28, 100, 65, 17);
 
 		btnType4 = new Button(grpOptions, SWT.RADIO);
 		btnType4.setText("\u7C7B\u578B\u56DB");
-		btnType4.setBounds(28, 135, 97, 17);
+		btnType4.setBounds(28, 135, 65, 17);
 
 		btnType5 = new Button(grpOptions, SWT.RADIO);
 		btnType5.setText("\u7C7B\u578B\u4E94");
-		btnType5.setBounds(28, 170, 97, 17);
+		btnType5.setBounds(28, 170, 65, 17);
 
-		btn4Symmetric = new Button(grpOptions, SWT.CHECK);
-		btn4Symmetric.setBounds(129, 135, 54, 17);
-		btn4Symmetric.setText("\u5BF9\u79F0\u5316");
+		btn4SymAvg = new Button(grpOptions, SWT.CHECK);
+		btn4SymAvg.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				btn4SymMin.setSelection(false);
+			}
+		});
+		btn4SymAvg.setBounds(160, 135, 40, 17);
+		btn4SymAvg.setText("\u5E73\u5747");
 
 		btn4Minus1 = new Button(grpOptions, SWT.CHECK);
 		btn4Minus1.setText("\u51CF\u4E00");
-		btn4Minus1.setBounds(192, 135, 54, 17);
+		btn4Minus1.setBounds(270, 135, 45, 17);
 
 		Label lblNdc = new Label(grpOptions, SWT.NONE);
-		lblNdc.setBounds(252, 135, 47, 17);
+		lblNdc.setBounds(321, 135, 40, 17);
 		lblNdc.setText("N-DC:");
 
 		spinDCN = new Spinner(grpOptions, SWT.BORDER);
 		spinDCN.setMaximum(5);
 		spinDCN.setMinimum(1);
 		spinDCN.setSelection(4);
-		spinDCN.setBounds(305, 132, 47, 23);
+		spinDCN.setBounds(367, 132, 47, 23);
+
+		btn4SymMin = new Button(grpOptions, SWT.CHECK);
+		btn4SymMin.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				btn4SymAvg.setSelection(false);
+			}
+		});
+		btn4SymMin.setText("\u6700\u5C0F");
+		btn4SymMin.setBounds(206, 135, 40, 17);
+
+		label_3 = new Label(grpOptions, SWT.NONE);
+		label_3.setText("\u5BF9\u79F0\uFF1A");
+		label_3.setBounds(114, 135, 40, 17);
 
 		Label label = new Label(grpFiles, SWT.NONE);
 		FormData fd_label = new FormData();
@@ -411,7 +433,8 @@ public class BatchView extends ViewPart {
 		btnType3.setEnabled(status);
 		btnType4.setEnabled(status);
 		btnType5.setEnabled(status);
-		btn4Symmetric.setEnabled(status);
+		btn4SymAvg.setEnabled(status);
+		btn4SymMin.setEnabled(status);
 		btn4Minus1.setEnabled(status);
 		btnSingleLine.setEnabled(status);
 		btnSeparateLines.setEnabled(status);

@@ -106,7 +106,7 @@ public class MatrixPrepare {
 		return result;
 	}
 
-	public static NumberMatrix prepare4(StringMatrix original, boolean symmetric, boolean minus1) {
+	public static NumberMatrix prepare4(StringMatrix original, boolean symAvg, boolean symMin, boolean minus1) {
 		int n = Math.max(original.row, original.col - 2);
 		NumberMatrix result = new NumberMatrix(n, n);
 		for (int i = 0; i < n; i++) {
@@ -124,12 +124,20 @@ public class MatrixPrepare {
 					if ((Double) result.data[i][j] > 0)
 						result.data[i][j] = (Double) result.data[i][j] - 1;
 		//
-		if (symmetric)
+		if (symAvg)
 			for (int i = 0; i < n; i++)
 				for (int j = 0; j < i; j++) {
 					double avg = ((Double) result.data[i][j] + (Double) result.data[j][i]) / 2;
 					result.data[i][j] = avg;
 					result.data[j][i] = avg;
+				}
+		//
+		if (symMin)
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < i; j++) {
+					double min = Math.min((Double) result.data[i][j], (Double) result.data[j][i]);
+					result.data[i][j] = min;
+					result.data[j][i] = min;
 				}
 		// ÌîÃû³Æ
 		for (int i = 0; i < original.row; i++)
