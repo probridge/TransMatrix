@@ -3,7 +3,13 @@ package transmatrix;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
+
+import org.jblas.ComplexDouble;
+import org.jblas.ComplexDoubleMatrix;
+import org.jblas.DoubleMatrix;
+import org.jblas.Eigen;
 
 public class MatrixCalculation {
 	private static double NOT_CONNECTED = 99999.0d;
@@ -632,6 +638,10 @@ public class MatrixCalculation {
 		Double[] nInDC = MatrixCalculation.getNormalized4N(inDC, normalizeN);
 		Double[] nOutDC = MatrixCalculation.getNormalized4N(outDC, normalizeN);
 		//
+		NumberMatrix bcMatrix = transDataMatrix.makeCopy();
+		bcMatrix.copySymmetric();
+		Double[] BC = MatrixCalculation.getBonacichCentrality(bcMatrix);
+		//
 		Double[] inStrength, outStrength, inOriginalStrength = null, outOriginalStrength = null;
 		if (type == 2 || type == 3) {
 			inStrength = MatrixCalculation.getStrength(keepMatrix, MatrixCalculation.IN, type);
@@ -720,6 +730,7 @@ public class MatrixCalculation {
 			rowResults[i].distribution = matrixDistribution;
 			rowResults[i].cluster = matrixCluster;
 			rowResults[i].R = matrixR;
+			rowResults[i].BC = BC[i];
 		}
 		//
 		MatrixResults result = new MatrixResults();
@@ -847,5 +858,162 @@ public class MatrixCalculation {
 				return index;
 		// not found - generate exception
 		return -1;
+	}
+
+	public static double getMaxEigenValue(NumberMatrix matrix) {
+		double eps = 1e-7;
+		int fuse = 10000;
+		int itr = 0;
+		boolean flag = true;
+		int n = matrix.col;
+		double[] v = new double[n];
+		v[0] = 1.0d;
+		double[] u = new double[n];
+		double d, t = 0.0d, f = 0.0d, z = 0.0d;
+		//
+		do {
+			itr++;
+			for (int i = 0; i < n; i++) {
+				double sum = 0.0d;
+				for (int j = 0; j < n; j++)
+					sum += ((Double) matrix.data[i][j]) * v[j];
+				u[i] = sum;
+			}
+			d = 0.0d;
+			for (int k = 0; k < n; k++)
+				d += u[k] * u[k];
+			d = Math.sqrt(d);
+			for (int i = 0; i < n; i++)
+				v[i] = u[i] / d;
+			if (itr > 1) {
+				double err = Math.abs((d - t) / d);
+				f = 1;
+				if (v[0] * z < 0)
+					f = -1;
+				if (err < eps)
+					flag = false;
+			}
+			if (flag) {
+				t = d;
+				z = v[0];
+			}
+			if (itr > fuse) {
+				flag = false;
+				throw new RuntimeException("Trigger FUSE");
+			}
+		} while (flag);
+		return f * d;
+	}
+
+	public static Double[] solveGauss(Double[][] A, Double[] b) {
+		double EPSILON = 1e-10;
+		int N = b.length;
+
+		for (int p = 0; p < N; p++) {
+			// find pivot row and swap
+			int max = p;
+			for (int i = p + 1; i < N; i++) {
+				if (Math.abs(A[i][p]) > Math.abs(A[max][p])) {
+					max = i;
+				}
+			}
+			Double[] temp = A[p];
+			A[p] = A[max];
+			A[max] = temp;
+			Double t = b[p];
+			b[p] = b[max];
+			b[max] = t;
+
+			// singular or nearly singular
+			if (Math.abs(A[p][p]) <= EPSILON) {
+				throw new RuntimeException("Matrix is singular or nearly singular");
+			}
+
+			// pivot within A and b
+			for (int i = p + 1; i < N; i++) {
+				double alpha = A[i][p] / A[p][p];
+				b[i] -= alpha * b[p];
+				for (int j = p; j < N; j++) {
+					A[i][j] -= alpha * A[p][j];
+				}
+			}
+		}
+
+		// back substitution
+		Double[] x = new Double[N];
+		for (int i = N - 1; i >= 0; i--) {
+			double sum = 0.0;
+			for (int j = i + 1; j < N; j++) {
+				sum += A[i][j] * x[j];
+			}
+			x[i] = (b[i] - sum) / A[i][i];
+		}
+		return x;
+	}
+
+	public static Double[] getBonacichCentrality(NumberMatrix matrix) {
+		Double[] principalEigenvector = getPrincipalEigenvector(convert(matrix));
+		return principalEigenvector;
+	}
+
+	private static DoubleMatrix convert(NumberMatrix matrix) {
+		DoubleMatrix dMatrix = new DoubleMatrix(matrix.row, matrix.col);
+		for (int i = 0; i < matrix.row; i++)
+			for (int j = 0; j < matrix.col; j++)
+				dMatrix.put(i, j, ((Double) matrix.data[i][j]).doubleValue());
+		return dMatrix;
+	}
+
+	private static Double[] getPrincipalEigenvector(DoubleMatrix matrix) {
+		int maxIndex = getMaxIndex(matrix);
+		ComplexDoubleMatrix eigenVectors = Eigen.eigenvectors(matrix)[0];
+		return getEigenVector(eigenVectors, maxIndex);
+	}
+
+	private static Double[] getEigenVector(ComplexDoubleMatrix eigenVectors, int maxIndex) {
+		Double[] ret = new Double[eigenVectors.rows];
+		for (int k = 0; k < eigenVectors.rows; k++)
+			ret[k] = eigenVectors.get(k, maxIndex).abs();
+		return ret;
+	}
+
+	private static int getMaxIndex(DoubleMatrix matrix) {
+		ComplexDouble[] doubleMatrix = Eigen.eigenvalues(matrix).toArray();
+		int maxIndex = 0;
+		for (int i = 0; i < doubleMatrix.length; i++) {
+			double newnumber = doubleMatrix[i].abs();
+			if ((newnumber > doubleMatrix[maxIndex].abs())) {
+				maxIndex = i;
+			}
+		}
+		return maxIndex;
+	}
+
+	public static void main(String[] args) throws Exception {
+		NumberMatrix matrix = new NumberMatrix(4, 4);
+		matrix.data[0][0] = 0.0d;
+		matrix.data[0][1] = 1.0d;
+		matrix.data[0][2] = 1.0d;
+		matrix.data[0][3] = 1.0d;
+		//
+		matrix.data[1][0] = 1.0d;
+		matrix.data[1][1] = 0.0d;
+		matrix.data[1][2] = 1.0d;
+		matrix.data[1][3] = 1.0d;
+		//
+		matrix.data[2][0] = 1.0d;
+		matrix.data[2][1] = 1.0d;
+		matrix.data[2][2] = 0.0d;
+		matrix.data[2][3] = 0.0d;
+		//
+		matrix.data[3][0] = 1.0d;
+		matrix.data[3][1] = 1.0d;
+		matrix.data[3][2] = 0.0d;
+		matrix.data[3][3] = 0.0d;
+		//
+		System.out.println("principalEigenvector = " + getBonacichCentrality(matrix));
+		//
+		System.out.println(1.0d / getMaxEigenValue(matrix));
+		//
 	}
 }

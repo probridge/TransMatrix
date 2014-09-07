@@ -115,6 +115,7 @@ public class ExcelResultWriter {
 				writeCell("EgoDensity", fmtHeaderCell);
 				writeCell("NonRedundancy", fmtHeaderCell);
 				writeCell("R", fmtHeaderCell);
+				writeCell("Bonacich", fmtHeaderCell);
 				writeCell("Distribution", fmtHeaderCell);
 				writeCell("Cluster", fmtHeaderCell);
 				writeCell("NumCircles", fmtHeaderCell);
@@ -132,6 +133,7 @@ public class ExcelResultWriter {
 					writeCell("EgoDensity[" + index + "]", fmtHeaderCell);
 					writeCell("NonRedundancy[" + index + "]", fmtHeaderCell);
 					writeCell("R[" + index + "]", fmtHeaderCell);
+					writeCell("Bonacich[" + index + "]", fmtHeaderCell);
 					writeCell("Distribution[" + index + "]", fmtHeaderCell);
 					writeCell("Cluster[" + index + "]", fmtHeaderCell);
 					writeCell("NumCircles[" + index + "]", fmtHeaderCell);
@@ -165,6 +167,7 @@ public class ExcelResultWriter {
 			writeCell("EgoDensity-Sy", fmtHeaderCell);
 			writeCell("NonRedundancy", fmtHeaderCell);
 			writeCell("R", fmtHeaderCell);
+			writeCell("Bonacich", fmtHeaderCell);
 			writeCell("Distribution", fmtHeaderCell);
 			writeCell("Cluster", fmtHeaderCell);
 			writeCell("NumCircles", fmtHeaderCell);
@@ -198,6 +201,7 @@ public class ExcelResultWriter {
 				writeCell(thisResult.egoDensity, fmtCell);
 				writeCell(thisResult.nonRedundancy, fmtCell);
 				writeCell(thisResult.R, fmtCell);
+				writeCell(thisResult.BC, fmtCell);
 				writeCell(thisResult.distribution, fmtCell);
 				writeCell(thisResult.cluster, fmtCell);
 				writeCell(thisResult.belongingCircle, fmtCell);
@@ -234,6 +238,7 @@ public class ExcelResultWriter {
 				writeCell(thisResult.egoDensitySy, fmtCell);
 				writeCell(thisResult.nonRedundancy, fmtCell);
 				writeCell(thisResult.R, fmtCell);
+				writeCell(thisResult.BC, fmtCell);
 				writeCell(thisResult.distribution, fmtCell);
 				writeCell(thisResult.cluster, fmtCell);
 				writeCell(thisResult.belongingCircle, fmtCell);

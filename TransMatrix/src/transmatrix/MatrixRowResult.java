@@ -15,4 +15,5 @@ public class MatrixRowResult {
 	public int belongingCircle;
 	public double distribution, cluster;
 	public double R;
+	public double BC;
 }
