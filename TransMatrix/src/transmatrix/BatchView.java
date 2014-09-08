@@ -63,6 +63,8 @@ public class BatchView extends ViewPart {
 	private Spinner spinDCN;
 	private Button btn4SymMin;
 	private Label label_3;
+	private Label label_4;
+	private Spinner spinCircleThreshold;
 
 	public BatchView() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
@@ -98,16 +100,15 @@ public class BatchView extends ViewPart {
 		fd_grpOptions.right = new FormAttachment(100, -10);
 		fd_grpOptions.left = new FormAttachment(grpFiles, 6);
 		fd_grpOptions.top = new FormAttachment(0, 10);
-		fd_grpOptions.bottom = new FormAttachment(0, 207);
 		grpOptions.setLayoutData(fd_grpOptions);
 
 		Group grpOutput = new Group(container, SWT.NONE);
+		fd_grpOptions.bottom = new FormAttachment(grpOutput, -6);
 		grpOutput.setText("\u8F93\u51FA\u9009\u9879");
 		FormData fd_grpOutput = new FormData();
-		fd_grpOutput.bottom = new FormAttachment(grpFiles, 0, SWT.BOTTOM);
+		fd_grpOutput.top = new FormAttachment(0, 245);
 		fd_grpOutput.right = new FormAttachment(100, -10);
 		fd_grpOutput.left = new FormAttachment(grpFiles, 6);
-		fd_grpOutput.top = new FormAttachment(grpOptions, 15);
 		grpOutput.setLayoutData(fd_grpOutput);
 
 		btnStart = new Button(grpOutput, SWT.NONE);
@@ -157,14 +158,15 @@ public class BatchView extends ViewPart {
 					if (eachFile instanceof File) {
 						ProcessWorker workunit = new ProcessWorker(self, (File) eachFile, type, btn4SymAvg
 								.getSelection(), btn4SymMin.getSelection(), btn4Minus1.getSelection(), spinDCN
-								.getSelection(), btnSeparateLines.getSelection(), txtOutputDir.getText());
+								.getSelection(), spinCircleThreshold.getSelection(), btnSeparateLines.getSelection(),
+								txtOutputDir.getText());
 						executor.submit(workunit);
 					}
 				}
 				executor.shutdown();
 			}
 		});
-		btnStart.setBounds(27, 132, 139, 36);
+		btnStart.setBounds(27, 118, 139, 36);
 		btnStart.setText("\u5F00\u59CB\u5904\u7406");
 
 		btnSeparateLines = new Button(grpOutput, SWT.RADIO);
@@ -196,7 +198,7 @@ public class BatchView extends ViewPart {
 			}
 		});
 		btnStop.setEnabled(false);
-		btnStop.setBounds(179, 132, 139, 36);
+		btnStop.setBounds(172, 118, 139, 36);
 		btnStop.setText("\u505C\u6B62");
 
 		Label label_2 = new Label(grpOutput, SWT.NONE);
@@ -261,6 +263,23 @@ public class BatchView extends ViewPart {
 		label_3 = new Label(grpOptions, SWT.NONE);
 		label_3.setText("\u5BF9\u79F0\uFF1A");
 		label_3.setBounds(114, 135, 40, 17);
+
+		label_4 = new Label(grpOptions, SWT.NONE);
+		label_4.setText("\u4F19\u5B9A\u4E49>=");
+		label_4.setBounds(114, 202, 54, 17);
+
+		spinCircleThreshold = new Spinner(grpOptions, SWT.BORDER);
+		spinCircleThreshold.setMaximum(5);
+		spinCircleThreshold.setMinimum(2);
+		spinCircleThreshold.setSelection(2);
+		spinCircleThreshold.setBounds(174, 199, 33, 23);
+		
+		Label label_5 = new Label(grpOptions, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label_5.setBounds(10, 193, 426, 2);
+		
+		Label label_6 = new Label(grpOptions, SWT.NONE);
+		label_6.setText("\u5168\u5C40\u53C2\u6570\uFF1A");
+		label_6.setBounds(28, 202, 65, 17);
 
 		Label label = new Label(grpFiles, SWT.NONE);
 		FormData fd_label = new FormData();
@@ -376,6 +395,7 @@ public class BatchView extends ViewPart {
 		btnSelectInv.setText("\u53CD\u9009");
 
 		grpProgress = new Group(container, SWT.NONE);
+		fd_grpOutput.bottom = new FormAttachment(grpProgress, -6);
 		grpProgress.setLayout(new FormLayout());
 		FormData fd_group = new FormData();
 		fd_group.top = new FormAttachment(grpFiles, 6);

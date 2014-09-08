@@ -12,4 +12,5 @@ public class MatrixResults {
 	public ArrayList<HashSet<Integer>> circlesMatrixMemberList; //伙矩阵成员
 	public NumberMatrix circlesMatrix; //伙矩阵
 	public double[] circleMatrixEfficienty, circleMatrixContraint; //伙矩阵结构洞
+	public int circleThreshold; //伙标准
 }

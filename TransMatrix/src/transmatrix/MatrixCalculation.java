@@ -3,7 +3,6 @@ package transmatrix;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import org.jblas.ComplexDouble;
@@ -463,7 +462,7 @@ public class MatrixCalculation {
 		return 3.0d * getTriangles(matrix) / bottom;
 	}
 
-	public static ArrayList<HashSet<Integer>> getCircleList(NumberMatrix matrix) {
+	public static ArrayList<HashSet<Integer>> getCircleList(NumberMatrix matrix, int circleThreshold) {
 		// pre-populate
 		ArrayList<HashSet<Integer>> circleList = new ArrayList<HashSet<Integer>>();
 		for (int i = 0; i < matrix.row; i++)
@@ -480,7 +479,7 @@ public class MatrixCalculation {
 		// ¿ªÊ¼µü´ú
 		do {
 			reduce(circleList);
-		} while (explore(circleList, matrix));
+		} while (explore(circleList, matrix, circleThreshold));
 		//
 		// finishing up
 		//
@@ -493,7 +492,7 @@ public class MatrixCalculation {
 		return circleList;
 	}
 
-	private static boolean explore(ArrayList<HashSet<Integer>> circleList, NumberMatrix matrix) {
+	private static boolean explore(ArrayList<HashSet<Integer>> circleList, NumberMatrix matrix, int circleThreshold) {
 		boolean structuralChange = false;
 		for (HashSet<Integer> eachCircle : circleList) {
 			ArrayList<Integer> nodesToAdd = new ArrayList<Integer>();
@@ -507,7 +506,7 @@ public class MatrixCalculation {
 						counter++;
 					}
 				}
-				if (counter >= 2)
+				if (counter >= circleThreshold)
 					nodesToAdd.add(eachNode);
 			}
 			if (nodesToAdd.size() > 0) {
@@ -619,7 +618,7 @@ public class MatrixCalculation {
 		return n1 / Math.sqrt(n2 * n3);
 	}
 
-	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym, int normalizeN) {
+	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym, int normalizeN, int circleThreshold) {
 		// type 2,3 uses 01 matrix for calculation except strength
 		NumberMatrix keepMatrix = transDataMatrix.makeCopy();
 		if (type == 2 || type == 3)
@@ -681,7 +680,7 @@ public class MatrixCalculation {
 		symetric01Matrix.copySymmetric();
 		symetric01Matrix.make01();
 		// Get circles
-		ArrayList<HashSet<Integer>> circles = MatrixCalculation.getCircleList(symetric01Matrix);
+		ArrayList<HashSet<Integer>> circles = MatrixCalculation.getCircleList(symetric01Matrix, circleThreshold);
 		// counter node --> containing circles
 		ArrayList<ArrayList<HashSet<Integer>>> nodesToCircleMap = MatrixCalculation.getReserveCircleList(circles,
 				symetric01Matrix.row);
@@ -739,6 +738,7 @@ public class MatrixCalculation {
 		result.connectingNodes = MatrixCalculation.getConnectionNodes(nodesToCircleMap, symetric01Matrix);
 		result.circles = circles;
 		result.circleDensity = new double[circles.size()];
+		result.circleThreshold = circleThreshold;
 		//
 		for (int i = 0; i < circles.size(); i++) {
 			// extract sub matrix from original

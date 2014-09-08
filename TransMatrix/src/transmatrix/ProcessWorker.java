@@ -16,9 +16,10 @@ public class ProcessWorker implements Runnable {
 	private String msg;
 	private boolean errFlag = false;
 	private boolean minus1;
+	private int circleThreshold;
 
 	public ProcessWorker(BatchView receiver, File workFile, int type, boolean symAvg, boolean symMin, boolean minus1,
-			int normalizeN, boolean sepLines, String outputDir) {
+			int normalizeN, int circleThreshold, boolean sepLines, String outputDir) {
 		this.receiver = receiver;
 		this.workfile = workFile;
 		this.type = type;
@@ -28,6 +29,7 @@ public class ProcessWorker implements Runnable {
 		this.sepLines = sepLines;
 		this.outputDir = outputDir;
 		this.normalizeN = normalizeN;
+		this.circleThreshold = circleThreshold;
 	}
 
 	//
@@ -44,7 +46,7 @@ public class ProcessWorker implements Runnable {
 		msg = "...[" + workfile.getName() + "]计算完成！";
 		ExcelResultWriter wr = null;
 		try {
-			wr = new ExcelResultWriter(workfile.getName(), outputDir, sepLines, type, normalizeN);
+			wr = new ExcelResultWriter(workfile.getName(), outputDir, sepLines, type, normalizeN, circleThreshold);
 			//
 			StringMatrix[] strMatrix = Matrix.loadAll(workfile, type);
 			Thread.yield();
@@ -57,7 +59,7 @@ public class ProcessWorker implements Runnable {
 					for (int run = 1; run <= 12; run++) {
 						transDataMatrix = MatrixPrepare.prepare1(run, strMatrix[i]);
 						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, symAvg || symMin,
-								normalizeN);
+								normalizeN, circleThreshold);
 						thisResult.rowResults[0].resultLable += "#" + run;
 						wr.appendResult(thisResult.rowResults[0]); // 取第一行
 						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
@@ -71,7 +73,7 @@ public class ProcessWorker implements Runnable {
 					for (int run = 1; run <= 2; run++) {
 						transDataMatrix = MatrixPrepare.prepare2(run, strMatrix[i]);
 						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, symAvg || symMin,
-								normalizeN);
+								normalizeN, circleThreshold);
 						thisResult.rowResults[0].resultLable += "#" + run;
 						wr.appendResult(thisResult.rowResults[0]); // 取第一行
 						wr.appendCircle(thisResult.rowResults[0].resultLable, thisResult.circles,
@@ -83,7 +85,8 @@ public class ProcessWorker implements Runnable {
 					break;
 				case 3:
 					transDataMatrix = MatrixPrepare.prepare3(strMatrix[i]);
-					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, symAvg || symMin, normalizeN);
+					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, symAvg || symMin, normalizeN,
+							circleThreshold);
 					wr.appendResult(thisResult.rowResults[0]); // 取第一行
 					wr.appendResult(null);
 					//
@@ -94,7 +97,8 @@ public class ProcessWorker implements Runnable {
 				case 4:
 					transDataMatrix = MatrixPrepare.prepare4(strMatrix[i], symAvg, symMin, minus1);
 					wr.appendMatrix(transDataMatrix);
-					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, symAvg || symMin, normalizeN);
+					thisResult = MatrixCalculation.computeResults(transDataMatrix, type, symAvg || symMin, normalizeN,
+							circleThreshold);
 					for (int index = 0; index < thisResult.rowResults.length; index++) {
 						wr.appendResult(thisResult.rowResults[index]); // 取所有行
 					}
@@ -107,7 +111,7 @@ public class ProcessWorker implements Runnable {
 					for (int run = 1; run <= 3; run++) {
 						transDataMatrix = MatrixPrepare.prepare5(run, strMatrix[i]);
 						thisResult = MatrixCalculation.computeResults(transDataMatrix, type, symAvg || symMin,
-								normalizeN);
+								normalizeN, circleThreshold);
 						thisResult.rowResults[0].resultLable += "#" + run;
 						wr.appendResult(thisResult.rowResults[0]); // 取第一行
 						//

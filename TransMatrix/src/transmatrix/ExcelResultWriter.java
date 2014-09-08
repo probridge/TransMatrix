@@ -46,8 +46,9 @@ public class ExcelResultWriter {
 	private ArrayList<double[]> eachCircleMatrixConstraint = new ArrayList<double[]>();
 
 	private int NDC;
+	private int circleThreshold;
 
-	public ExcelResultWriter(String fileName, String outputPath, boolean sepLines, int type, int NDC)
+	public ExcelResultWriter(String fileName, String outputPath, boolean sepLines, int type, int NDC, int circleThreshold)
 			throws IOException, WriteException {
 		this.fileName = fileName;
 		this.outputFileName = fileName.substring(0, fileName.lastIndexOf('.')) + "_Result.xls";
@@ -55,6 +56,7 @@ public class ExcelResultWriter {
 		this.sepLines = sepLines;
 		this.type = type;
 		this.NDC = NDC;
+		this.circleThreshold = circleThreshold;
 	}
 
 	public void appendCircle(String name, ArrayList<HashSet<Integer>> circles, double[] circleDensity,
@@ -267,6 +269,7 @@ public class ExcelResultWriter {
 				writeCell("矩阵", fmtHeaderCell);
 				writeCell(circleNames.get(i), fmtHeaderCell);
 				if (!circleNotice) {
+					writeCell("伙参数 N >= " + circleThreshold, fmtHeaderCell);
 					writeCell("伙成员(N)为伙连接点", fmtHeaderCell);
 					writeCell("结构洞[N]为伙公共节点", fmtHeaderCell);
 					writeCell("结构洞-[N]-为非伙节点", fmtHeaderCell);
