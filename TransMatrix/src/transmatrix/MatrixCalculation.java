@@ -486,7 +486,7 @@ public class MatrixCalculation {
 		Iterator<HashSet<Integer>> it = circleList.iterator();
 		while (it.hasNext()) {
 			HashSet<Integer> thisCircle = it.next();
-			if (thisCircle.size() < 3)
+			if (thisCircle.size() < circleThreshold + 1)
 				it.remove();
 		}
 		return circleList;
@@ -506,7 +506,7 @@ public class MatrixCalculation {
 						counter++;
 					}
 				}
-				if (counter >= circleThreshold)
+				if (counter == eachCircle.size() || counter >= circleThreshold)
 					nodesToAdd.add(eachNode);
 			}
 			if (nodesToAdd.size() > 0) {
@@ -618,7 +618,8 @@ public class MatrixCalculation {
 		return n1 / Math.sqrt(n2 * n3);
 	}
 
-	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym, int normalizeN, int circleThreshold) {
+	public static MatrixResults computeResults(NumberMatrix transDataMatrix, int type, boolean sym, int normalizeN,
+			int circleThreshold) {
 		// type 2,3 uses 01 matrix for calculation except strength
 		NumberMatrix keepMatrix = transDataMatrix.makeCopy();
 		if (type == 2 || type == 3)
